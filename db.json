@@ -15,287 +15,314 @@
       "email": "mohammedraheesvp998@gmail.com",
       "password": "12345678",
       "confirmPassword": "12345678"
+    },
+    {
+      "id": "6c73",
+      "firstName": "mohammed",
+      "lastName": "raheeeees ",
+      "email": "mohammedrahees676@gmail.com",
+      "password": "RAHEES70",
+      "confirmPassword": "RAHEES70"
+    },
+    {
+      "id": "805a",
+      "firstName": "green",
+      "lastName": "heleo",
+      "email": "dfd@gmail.com",
+      "password": "12345678",
+      "confirmPassword": "12345678"
     }
   ],
   "products": [
     {
-      "id": 1,
-      "name": "Barcelona Home Jersey",
-      "price": 999,
-      "originalPrice": 1499,
-      "rating": 4,
-      "image": "src/ProductImage/home barca.jpg",
-      "offer": "30% OFF",
-      "limited": true,
-      "category": "Jersey",
-      "team": "Barcelona"
-    },
-    {
-      "id": 2,
-      "name": "Real Madrid Home Jersey",
+      "id": "1",
+      "name": "Football",
       "price": 499,
-      "originalPrice": 799,
-      "rating": 5,
-      "image": "src/ProductImage/madrid home.jpg",
-      "offer": "Special Deal",
-      "category": "Jersey",
-      "team": "Real Madrid"
+      "originalPrice": 699,
+      "rating": 4,
+      "image": "../src/assets/Images/champions_ball1.jpg",
+      "offer": "25% OFF",
+      "category": "Balls",
+      "featured": "true",
+      "createdAt": "2024-12-18T10:20:30.000Z"
+      
     },
     {
-      "id": 3,
-      "name": "Liverpool Home Jersey",
-      "price": 699,
-      "rating": 3,
-      "image": "src/ProductImage/LiverPool Home.jpg",
-      "limited": true,
-      "category": "Jersey",
-      "team": "Liverpool"
-    },
-    {
-      "id": 4,
-      "name": "Paris Saint Germain Home Jesey",
+      "id": "2",
+      "name": "Boots",
+      "price": 1299,
       "originalPrice": 1499,
-      "price": 299,
-      "rating": 4,
-      "image": "src/ProductImage/Psg Home.jpg",
-      "limited": true,
-      "category": "Jersey",
-      "team": "Paris Saint Germain"
-    },
-    {
-      "id": 5,
-      "name": "Manchester United Home Jersey",
-      "price": 1099,
-      "originalPrice": 1599,
       "rating": 5,
-      "image": "src/ProductImage/United Home.jpg",
-      "offer": "Limited Edition",
-      "limited": true,
-      "category": "Jersey",
-      "team": "Manchester United"
+      "image": "../src/assets/Images/boots_.jpg",
+      "offer": "15% OFF",
+      "category": "Boots",
+      "featured": "false",
+      "createdAt": "2024-09-05T14:10:00.000Z"
     },
     {
-      "id": 6,
-      "name": "Manchester City Home Jersey",
-      "price": 899,
-      "originalPrice": 1299,
-      "rating": 4,
-      "image": "src/ProductImage/City Home.jpg",
-      "offer": "20% OFF",
-      "category": "Jersey",
-      "team": "Manchester City"
-    },
-    {
-      "id": 7,
-      "name": "Chelsea Home Jersey",
-      "price": 1199,
-      "originalPrice": 1699,
-      "rating": 4,
-      "image": "src/ProductImage/Chelsea Home.jpg",
-      "category": "Jersey",
-      "team": "Chelsea"
-    },
-    {
-      "id": 8,
-      "name": "Real Madrid Third Jersey",
-      "price": 1150,
-      "originalPrice": 1699,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150",
-      "category": "Jersey",
-      "team": "Real Madrid"
-    },
-    {
-      "id": 9,
-      "name": "FC Barcelona Training Shorts",
-      "price": 499,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 10,
-      "name": "Real Madrid Training Shorts",
-      "price": 549,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 11,
-      "name": "Football Socks (Pack of 2)",
-      "price": 199,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150",
-      "offer": "Buy 1 Get 1 Free"
-    },
-    {
-      "id": 12,
-      "name": "Barcelona Cap",
-      "price": 299,
-      "rating": 3,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 13,
-      "name": "Real Madrid Cap",
-      "price": 299,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 14,
-      "name": "Barcelona Hoodie",
-      "price": 1599,
-      "originalPrice": 1999,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150",
-      "offer": "Winter Special"
-    },
-    {
-      "id": 15,
-      "name": "Real Madrid Hoodie",
-      "price": 1499,
-      "originalPrice": 1899,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 16,
-      "name": "Football Backpack",
-      "price": 899,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150",
-      "limited": true
-    },
-    {
-      "id": 17,
-      "name": "Shin Guards",
-      "price": 349,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 18,
-      "name": "Training Cones Set",
-      "price": 599,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 19,
-      "name": "Whistle & Stopwatch Combo",
-      "price": 249,
-      "rating": 3,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 20,
-      "name": "Barcelona Scarf",
-      "price": 399,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150",
-      "offer": "Matchday Special"
-    },
-    {
-      "id": 21,
-      "name": "Real Madrid Scarf",
-      "price": 399,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 22,
-      "name": "Football Keychain",
-      "price": 99,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 23,
-      "name": "Barcelona Mug",
-      "price": 249,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 24,
-      "name": "Real Madrid Mug",
-      "price": 249,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 25,
-      "name": "Mini Football",
-      "price": 350,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150",
-      "offer": "Kids Special"
-    },
-    {
-      "id": 26,
-      "name": "Official Match Ball",
-      "price": 2499,
-      "originalPrice": 2999,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150",
-      "limited": true
-    },
-    {
-      "id": 27,
-      "name": "Training Football",
-      "price": 899,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 28,
-      "name": "Barcelona Poster",
-      "price": 199,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 29,
-      "name": "Real Madrid Poster",
-      "price": 199,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150"
-    },
-    {
-      "id": 30,
-      "name": "Stadium Replica Model",
-      "price": 3499,
-      "originalPrice": 3999,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150",
-      "limited": true
-    },
-    {
-      "id": 16,
-      "name": "Football Backpack",
-      "price": 899,
-      "rating": 5,
-      "image": "https://via.placeholder.com/200x150",
-      "limited": true,
-      "category": "Accessories"
-    },
-    {
-      "id": 17,
-      "name": "Shin Guards",
-      "price": 349,
-      "rating": 4,
-      "image": "https://via.placeholder.com/200x150",
-      "category": "Accessories"
-    },
-    {
-      "id": 29,
+      "id": "3",
       "name": "Goalkeeper Gloves (Standard)",
       "price": 799,
       "originalPrice": 999,
       "rating": 4,
-      "image": "https://via.placeholder.com/200x150",
+      "image": "../src/assets/Images/gloves.jpg",
       "offer": "20% OFF",
-      "category": "Gloves"
-    }
+      "category": "Gloves",
+      "featured": "true",
+      "createdAt": "2023-11-11T09:45:15.000Z"
+    },
+    {
+      "id": "4",
+      "name": "Goalkeeper Gloves (Premium)",
+      "price": 1299,
+      "originalPrice": 1599,
+      "rating": 5,
+      "image": "../src/assets/Images/gloves_premium.jpg",
+      "offer": "18% OFF",
+      "category": "Gloves",
+      "featured": "false",
+      "createdAt": "2024-03-21T16:30:00.000Z"
+    },
+    {
+      "id": "5",
+      "name": "Shin Guards",
+      "price": 399,
+      "originalPrice": 499,
+      "rating": 4,
+      "image": "../src/assets/Images/shin_guards.jpg",
+      "offer": "10% OFF",
+      "category": "Accessories",
+      "featured": "false",
+      "createdAt": "2025-01-02T12:00:00.000Z"
+    },
+    {
+      "id": "6",
+      "name": "Team Jersey (Real Madrid)",
+      "price": 1999,
+      "originalPrice": 2499,
+      "rating": 5,
+      "image": "../src/assets/Images/real_home.jpg",
+      "offer": "20% OFF",
+      "category": "Jersey",
+      "featured": "true",
+      "createdAt": "2024-10-10T08:20:00.000Z"
+    },
+    {
+      "id": "7",
+      "name": "Barcelona Home Jersey",
+      "price": 1899,
+      "originalPrice": 2299,
+      "rating": 5,
+      "image": "../src/assets/Images/barca_home.jpg",
+      "offer": "17% OFF",
+      "category": "Jersey",
+      "featured": "false",
+      "createdAt": "2023-12-25T18:00:00.000Z"
+    },
+    {
+      "id": "8",
+      "name": "Manchester United Home Jersey",
+      "price": 2099,
+      "originalPrice": 2599,
+      "rating": 4,
+      "image": "../src/assets/Images/United_home.jpg",
+      "offer": "19% OFF",
+      "category": "Jersey",
+      "featured": "true",
+      "createdAt": "2024-05-02T07:40:00.000Z"
+    },
+    {
+      "id": "9",
+      "name": "Chelsea Home Jersey",
+      "price": 1799,
+      "originalPrice": 2199,
+      "rating": 4,
+      "image": "../src/assets/Images/chelsea_home.jpg",
+      "offer": "15% OFF",
+      "category": "Jersey",
+      "featured": "false",
+      "createdAt": "2024-08-19T20:10:00.000Z"
+    },
+    {
+      "id": "10",
+      "name": "Football Backpack",
+      "price": 999,
+      "originalPrice": 1299,
+      "rating": 4,
+      "image": "../src/assets/Images/football_backpack.jpg",
+      "offer": "22% OFF",
+      "category": "Bags",
+      "featured": "true",
+      "createdAt": "2023-09-15T15:25:00.000Z"
+    },
+    {
+      "id": "11",
+      "name": "Real Madrid Poster",
+      "price": 299,
+      "originalPrice": 399,
+      "rating": 5,
+      "image": "../src/assets/Images/real_poster.jpg",
+      "offer": "25% OFF",
+      "category": "Accessories",
+      "featured": "false",
+      "createdAt": "2024-06-12T19:50:00.000Z"
+    },
+    
+  {
+    "id": "12",
+    "name": "Liverpool Home Jersey",
+    "price": 1899,
+    "originalPrice": 2299,
+    "rating": 4.5,
+    "image": "../src/assets/Images/liverpool_home.jpg",
+    "offer": "17% OFF",
+    "category": "Jersey",
+    "featured": "true",
+    "createdAt": "2024-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "13",
+    "name": "GK Jersey",
+    "price": 4500,
+    "originalPrice": 5000,
+    "rating": 4.8,
+    "image": "../src/assets/Images/psg_gk_away.jpg",
+    "offer": "10% OFF",
+    "category": "Jersey",
+    "featured": "false",
+    "createdAt": "2024-08-01T15:30:00.000Z"
+  },
+  {
+    "id": "14",
+    "name": " Liverpool Shorts",
+    "price": 1200,
+    "originalPrice": 1500,
+    "rating": 4.6,
+    "image": "../src/assets/Images/liverpool_shorts.jpg",
+    "offer": "20% OFF",
+    "category": "Shorts",
+    "featured": "true",
+    "createdAt": "2024-07-20T10:10:00.000Z"
+  },
+  {
+    "id": "15",
+    "name": "PSG Home Jersey",
+    "price": 850,
+    "originalPrice": 999,
+    "rating": 4.2,
+    "image": "../src/assets/Images/psg_home.jpg",
+    "offer": "15% OFF",
+    "category": "Jersey",
+    "featured": "false",
+    "createdAt": "2024-06-05T09:00:00.000Z"
+  },
+  {
+    "id": "16",
+    "name": "Bayern Home Jersey",
+    "price": 2199,
+    "originalPrice": 2799,
+    "rating": 4.7,
+    "image": "../src/assets/Images/bayern_home.jpg",
+    "offer": "21% OFF",
+    "category": "Jersey",
+    "featured": "true",
+    "createdAt": "2024-05-18T18:45:00.000Z"
+  },
+  {
+    "id": "17",
+    "name": "Real Madrid Away",
+    "price": 600,
+    "originalPrice": 750,
+    "rating": 4.3,
+    "image": "../src/assets/Images/real_away.jpg",
+    "offer": "20% OFF",
+    "category": "Jersey",
+    "featured": "false",
+    "createdAt": "2024-08-10T08:20:00.000Z"
+  },
+  {
+    "id": "18",
+    "name": "Training Bibs (Set of 6)",
+    "price": 1500,
+    "originalPrice": 1800,
+    "rating": 4.0,
+    "image": "../src/assets/Images/chelsea_home.jpg",
+    "offer": "17% OFF",
+    "category": "Training Gear",
+    "featured": "false",
+    "createdAt": "2024-09-01T14:50:00.000Z"
+  },
+  {
+    "id": "19",
+    "name": "Liverpool Socks",
+    "price": 2500,
+    "originalPrice": 2999,
+    "rating": 4.9,
+    "image": "../src/assets/Images/liverpool_shocks.jpg",
+    "offer": "16% OFF",
+    "category": "socks",
+    "featured": "true",
+    "createdAt": "2024-09-25T11:00:00.000Z"
+  },
+  {
+    "id": "20",
+    "name": "Boots",
+    "price": 2000,
+    "originalPrice": 2500,
+    "rating": 4.5,
+    "image": "../src/assets/Images/boots.jpg",
+    "offer": "20% OFF",
+    "category": "Boots",
+    "featured": "true",
+    "createdAt": "2024-04-22T09:30:00.000Z"
+  },
+  {
+    "id": "21",
+    "name": "Gloves",
+    "price": 300,
+    "originalPrice": 400,
+    "rating": 4.1,
+    "image": "../src/assets/Images/gloves.jpg",
+    "offer": "25% OFF",
+    "category": "Gloves",
+    "featured": "false",
+    "createdAt": "2024-07-08T16:00:00.000Z"
+  },
+  {
+    "id": "22",
+    "name": "Bayern GK Jersey",
+    "price": 300,
+    "originalPrice": 400,
+    "rating": 4.1,
+    "image": "../src/assets/Images/bayern_gk_1.jpg",
+    "offer": "25% OFF",
+    "category": "Jersey",
+    "featured": "false",
+    "createdAt": "2024-07-08T16:00:00.000Z"
+  },
+  {
+    "id": "23",
+    "name": "PSG Away Jersey",
+    "price": 300,
+    "originalPrice": 400,
+    "rating": 4.1,
+    "image": "../src/assets/Images/psg_away.jpg",
+    "offer": "25% OFF",
+    "category": "Jersey",
+    "featured": "false",
+    "createdAt": "2024-07-08T16:00:00.000Z"
+  },
+  {
+    "id": "24",
+    "name": "Barcelona Third Jersey",
+    "price": 300,
+    "originalPrice": 400,
+    "rating": 4.1,
+    "image": "../src/assets/Images/barca_third.jpg",
+    "offer": "25% OFF",
+    "category": "Jersey",
+    "featured": "false",
+    "createdAt": "2024-07-08T16:00:00.000Z"
+  }
   ]
 }

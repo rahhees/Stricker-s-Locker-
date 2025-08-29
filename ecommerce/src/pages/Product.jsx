@@ -1,228 +1,225 @@
-import React, { useState, useEffect } from "react";
-import { Star, ShoppingCart, Search } from "lucide-react";
-import axios from "axios";
-import api from "../Api/AxiosInstance";
+import React, { useContext, useEffect, useState } from 'react';
+import { Search, Filter, Grid3X3, List, ShoppingCart, Heart } from 'lucide-react';
+import api from '../Api/AxiosInstance';
+import { CartContext } from '../Context/CartContext';
+import { WishlistContext } from '../Context/WishlistContext';
+import ProductCard from '../Component/CartDesign'; 
+import { useNavigate } from 'react-router-dom';
 
 function Product() {
-
   const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState([])
-  const [selectedTeams, setSelectedTeams] = useState([])
+  const [searchTerm, setSearchTerm] = useState('');
+  const [appliedSearch, setAppliedSearch] = useState('');
+  const [sortOption, setSortOption] = useState('All');
+  const [viewMode, setViewMode] = useState('grid');
+  const [loading, setLoading] = useState(true);
+  const [categoryFilter, SetCategoryFilter] = useState("All");
+
+  const { wishlist, addToWishlist } = useContext(WishlistContext);
+  const { cart, addToCart } = useContext(CartContext);
+
+  const isInWishlist = (id) => wishlist.some((item) => item.id === id);
+
+
+  const navigate = useNavigate()
 
   useEffect(() => {
-    api
-      .get("/products")
-      .then((res) => setProducts(res.data))
-      .catch((err) => console.error("Error fetching products:", err));
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get('/products');
+        setProducts(res.data);
+      } catch (err) {
+        console.error('Error fetching data...', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
   }, []);
 
+  useEffect(() => {
+    console.log('Cart Updated', cart);
+  }, [cart]);
 
+  // Filter by search
+  let filteredProducts = products.filter((p) => {
+    const query = appliedSearch.toLowerCase();
+    return (
+      query === '' ||
+      p.name.toLowerCase().includes(query) ||
+      p.category?.toLowerCase().includes(query) ||
+      p.team?.toLowerCase().includes(query)
+    );
+  });
 
+  // Filter by category
+  let filteredProductss = products.filter((p) => {
+    const query = appliedSearch.toLowerCase();
+    const matchesSearch =
+      query === '' ||
+      p.name.toLowerCase().includes(query) ||
+      p.team?.toLowerCase().includes(query);
 
-  const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    const matchesCategory =
+      categoryFilter === 'All' || p.category.toLowerCase() === categoryFilter.toLowerCase();
 
-  // Logic for handleCategory 
- 
+    return matchesSearch && matchesCategory;
+  });
 
-  const handleCategoryChange = (category) => {
-    console.log("Selected ", selectedCategories, 'Category', category);
+  // Sort
+  filteredProductss = filteredProductss.sort((a, b) => {
+    if (sortOption === 'Featured') return (b.featured === 'true') - (a.featured === 'true');
+    if (sortOption === 'Price: Low to High') return a.price - b.price;
+    if (sortOption === 'Price: High to Low') return b.price - a.price;
+    if (sortOption === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
+    if (sortOption === 'Top Rated') return b.rating - a.rating;
+    return 0; 
+  });
 
-    if (selectedCategories == category) {
-      // remove category if already selected
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
-    } else {
-      // add category if not selected
-      setSelectedCategories([...selectedCategories, category]);
-    }
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setAppliedSearch(searchTerm);
   };
 
-
-
-  const handleTeamChange = (team) => {
-    setSelectedTeams((prev) =>
-      prev.includes(team) ?
-        prev.filter((t) => t !== team) :
-        [...prev, team])
-
-    const fiteredProducts = products.filter((p) => {
-
-      // search filter 
-      const matchesSearch = p.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-
-      // Category filter
-      const matchesCategory =
-        selectedCategories.length === 0 || selectedCategories.includes(p.category);
-
-      // Team filter
-      const matchesTeam =
-        selectedTeams.length === 0 || selectedTeams.includes(p.team);
-
-      return matchesSearch && matchesCategory && matchesTeam;
-    })
-
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
+
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Banner Section */}
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-800 text-white py-16 text-center">
-        <h1 className="text-5xl font-bold mb-4">Football Store</h1>
-        <p className="text-lg text-gray-200">
-          Premium gear from the world&apos;s top clubs and brands
-        </p>
-        <a href="/" className="mt-4 inline-block text-blue-300 hover:text-white underline">
-          ← Back to Home
-        </a>
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Our Products</h1>
+          <p className="text-gray-600 mt-1">Discover amazing products at great prices</p>
+        </div>
+
+        {/* Search Bar */}
+        <form className="w-full sm:w-80 lg:w-64 relative" onSubmit={handleSearch}>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search products..."
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+          />
+          <button
+            type="submit"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-1 rounded hover:bg-gray-800"
+          >
+            <Search size={14} />
+          </button>
+        </form>
+
+        {/* Cart + Wishlist */}
+        <div className="flex items-center gap-3">
+          <button  onClick={()=>navigate('/CartPage')}   className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+            <ShoppingCart size={20} className="text-black-500" />
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+              {cart.length}
+            </span>
+          </button>
+          <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+            <Heart size={20} className="text-black-500" />
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+              {wishlist.length}
+            </span>
+          </button>
+        </div>
       </div>
 
-      {/* Main Layout */}
-      <div className="max-w-7xl mx-auto px-6 py-10 flex gap-8">
-        {/* Sidebar Filters */}
-        <aside className="w-64 bg-white rounded-xl shadow-md p-6 hidden md:block">
-          <h2 className="font-bold text-lg mb-4">Filters</h2>
-
-          {/* Categories */}
-          <div className="mb-6">
-            <h3 className="font-semibold mb-2">Categories</h3>
-            <ul className="space-y-2 text-gray-700">
-              <li><input type="checkbox" className="mr-2" onChange={() => setSelectedCategories([])} /> All </li>
-              <li><input type="checkbox" className="mr-2" onChange={(e) => handleCategoryChange(e.target.value)}
-                value="Jersey" checked={selectedCategories.includes('Jerseys')} /> Jerseys </li>
-              <li><input type="checkbox" className="mr-2" onChange={(e) => handleCategoryChange(e.target.value)}
-                value="Shorts" checked={selectedCategories.includes("Shorts")} /> Shorts </li>
-              <li><input type="checkbox" className="mr-2" onChange={(e) => handleCategoryChange(e.target.value)}
-                checked={selectedCategories.includes("Boots")} /> Boots </li>
-              <li><input type="checkbox" className="mr-2" onChange={(e) => handleCategoryChange(e.target.value)}
-                checked={selectedCategories.includes("Gloves")} /> Gloves </li>
-              <li><input type="checkbox" className="mr-2" onChange={(e) => handleCategoryChange(e.target.value)}
-                checked={selectedCategories.includes("Accessories")} /> Accessories</li>
-            </ul>
+      {/* Controls */}
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-gray-600">
+            <Filter size={16} />
+            <span className="text-sm font-medium">Sort By:</span>
           </div>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option>All</option>
+            <option>Featured</option>
+            <option>Newest</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Top Rated</option>
+          </select>
 
-          {/* Teams */}
-          <div className="mb-6">
-            <h3 className="font-semibold mb-2">Teams</h3>
-            <ul className="space-y-2 text-gray-700">
-              <li><input type="checkbox" className="mr-2" onChange={() => handleTeamChange("Barcelona")}
-                checked={selectedTeams.includes("Barcelona")} /> Barcelona </li>
-              <li><input type="checkbox" className="mr-2" onChange={() => handleTeamChange("Real Madrid")}
-                checked={selectedTeams.includes("Real Madrid")} /> Real Madrid </li>
-              <li><input type="checkbox" className="mr-2" onChange={() => handleTeamChange("PSG")}
-                checked={selectedTeams.includes("PSG")} /> PSG </li>
-              <li><input type="checkbox" className="mr-2" onChange={() => handleTeamChange("Manchester United")}
-                checked={selectedTeams.includes("Manchester United")} /> Manchester United </li>
-              <li><input type="checkbox" className="mr-2" onChange={() => handleTeamChange("Liverpool")}
-                checked={selectedTeams.includes("Liverpool")} /> Liverpool </li>
-            </ul>
-          </div>
+          {/* Category Filter */}
+          <select
+            value={categoryFilter}
+            onChange={(e) => SetCategoryFilter(e.target.value)}
+            className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option>All</option>
+            <option>Balls</option>
+            <option>Jersey</option>
+            <option>Shorts</option>
+            <option>Socks</option>
+            <option>Gloves</option>
+            <option>Accessories</option>
+          </select>
+        </div>
 
-          
-        </aside>
-
-        {/* Main Content */}
-        <div className="flex-1">
-          {/* Search & Sort */}
-          <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-            {/* Search bar */}
-            <div className="relative w-full md:w-1/2">
-              <Search className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Sort Dropdown */}
-            <select className="border rounded-lg px-4 py-2">
-              <option>Featured</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Top Rated</option>
-            </select>
-          </div>
-
-          {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition relative flex flex-col"
-              >
-                {/* Badges */}
-                {product.offer && (
-                  <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-md">
-                    {product.offer}
-                  </span>
-                )}
-                {product.limited && (
-                  <span className="absolute top-3 right-3 bg-black text-white text-xs px-2 py-1 rounded-md">
-                    Limited Edition
-                  </span>
-                )}
-
-                {/* Product Image */}
-                <div className="w-full h-48 bg-gray-100">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Product Details */}
-                <div className="flex flex-col flex-grow p-4">
-                  <h2 className="text-base font-semibold text-gray-800 mb-2 line-clamp-2">
-                    {product.name}
-                  </h2>
-
-                  {/* Price */}
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg font-bold text-blue-600">
-                      ₹{product.price}
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-sm line-through text-gray-500">
-                        ₹{product.originalPrice}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Rating */}
-                  <div className="flex items-center mb-4">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${i < product.rating
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-300"
-                          }`}
-                      />
-                    ))}
-                    <span className="ml-2 text-sm text-gray-500">
-                      ({product.rating})
-                    </span>
-                  </div>
-
-                  {/* Add to Cart */}
-                  <button className="mt-auto flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                    <ShoppingCart size={18} /> Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
+        {/* View toggle */}
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-gray-600">View:</span>
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Grid3X3 size={16} />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <List size={16} />
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Products */}
+      {filteredProductss.length > 0 ? (
+        <div
+          className={`${
+            viewMode === 'grid'
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+              : 'space-y-4'
+          } max-w-7xl mx-auto`}
+        >
+          {filteredProductss.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              onAddToCart={addToCart}
+              onAddToWishlist={addToWishlist}
+              isInWishlist={isInWishlist}
+              viewMode={viewMode}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16">
+          <p className="text-gray-600">No products found. Try adjusting your search or filters.</p>
+        </div>
+      )}
     </div>
   );
 }
 
 export default Product;
-

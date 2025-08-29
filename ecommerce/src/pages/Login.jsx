@@ -1,10 +1,9 @@
 import React, { useReducer, useState, useEffect } from "react";
-import Axios from "axios";
+
 import { FaGoogle, FaFacebook } from "react-icons/fa";
-import api from "../Api/AxiosInstance";
+import api from "../Api/AxiosInstance"
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
-import axios from "axios";
 
 
 const registrationReducer = (state, action) => {
@@ -64,8 +63,9 @@ console.log(regState)
         setSubmitData(null);
 
       } catch (err) {
-        setRegError(err.response?.data?.message || "Network error ❌");
-        setSubmitData(null);
+      
+        setRegError(err.response?.data?.message || "Network error ❌" );
+      
       }
     };
 
@@ -109,7 +109,7 @@ console.log(regState)
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    loginuser(loginEmail,loginPassword)
+    await loginuser(loginEmail,loginPassword)
   };
 
   return (

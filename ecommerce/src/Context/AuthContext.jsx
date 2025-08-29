@@ -1,5 +1,5 @@
 import React, { Children, createContext, useState } from 'react'
-
+import axios from 'axios'
 export const AuthContext =createContext()
 
 export const Authprovider=({children})=>{
@@ -15,21 +15,19 @@ const loginuser=async(loginEmail,loginPassword)=>{
       setLoginError("Please fill in both fields");
       return;
     }
+const response = await axios.get(`http://localhost:5001/users?email=${loginEmail.trim()}`);
+if (response.data.length > 0) {
+  const user = response.data[0];
+  if (user.password === loginPassword) {
+    alert("Login Successful ✅");
+    setLoginError("");
+  } else {
+    setLoginError("Invalid credentials ❌");
+  }
+} else {
+  setLoginError("Invalid credentials ❌");
+}
 
-    try {
-      const response = await Axios.get(
-        `http://localhost:5000/users?email=${loginEmail}&password=${loginPassword}`
-      );
-      if (response.data.length > 0) {
-        alert("Login Successful ✅");
-        setLoginError("");
-        
-      } else {
-        setLoginError("Invalid credentials ❌");
-      }
-    } catch {
-      setLoginError("Network error ❌");
-    }
 }
 
 async function registeredUser(){

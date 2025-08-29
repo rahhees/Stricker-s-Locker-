@@ -59,7 +59,7 @@ const Navbar = () => {
 
               {/* Sign In */}
               <button
-                onClick={() => handleNavigate("/signin")}
+                onClick={() => handleNavigate("/login")}
                 className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 cursor-pointer"
               >
                 Sign In
@@ -133,43 +133,7 @@ const Navbar = () => {
         )}
       </nav>
 
-      {/* SECONDARY NAVBAR */}
-      <div className="fixed top-16 left-0 w-full bg-gray-100 shadow-sm z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-evenly h-12 items-center">
-            <button
-              onClick={() => handleNavigate("/")}
-              className="hover:text-blue-600 transition cursor-pointer"
-            >
-              Home
-            </button>
-            <button
-              onClick={() => handleNavigate("/products", "jerseys")}
-              className="hover:text-blue-600 transition cursor-pointer"
-            >
-              Jerseys
-            </button>
-            <button
-              onClick={() => handleNavigate("/products", "shorts")}
-              className="hover:text-blue-600 transition cursor-pointer"
-            >
-              Shorts
-            </button>
-            <button
-              onClick={() => handleNavigate("/products", "gloves")}
-              className="hover:text-blue-600 transition cursor-pointer"
-            >
-              Gloves
-            </button>
-            <button
-              onClick={() => handleNavigate("/products", "accessories")}
-              className="hover:text-blue-600 transition cursor-pointer"
-            >
-              Accessories
-            </button>
-          </div>
-        </div>
-      </div>
+     
     </>
   );
 };
