@@ -11,9 +11,7 @@ function Trending({ products, onAddToCart, onAddToWishlist, isInWishlist }) {
       <h2 className="text-2xl font-bold mb-6">Top Sale Items</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {trendingProducts.map(product => (
-          <ProductCard
-            key={product.id}
-            product={product}
+          <ProductCard key={product.id} product={product}
             onAddToCart={onAddToCart}
             onAddToWishlist={onAddToWishlist}
             isInWishlist={isInWishlist}

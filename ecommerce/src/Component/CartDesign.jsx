@@ -1,7 +1,12 @@
 // src/Component/ProductCard.jsx
 import { Heart, ShoppingCart, Star } from "lucide-react";
+import { CartContext } from "../Context/CartContext";
+import { useContext, useEffect } from "react";
+import api from "../Api/AxiosInstance";
 
 function ProductCard({ product, onAddToCart, onAddToWishlist, isInWishlist, viewMode }) {
+  const {setCartLength}=useContext(CartContext);
+
   return (
     <div
       className={`bg-white rounded-xl shadow hover:shadow-lg overflow-hidden transition 
@@ -63,7 +68,9 @@ function ProductCard({ product, onAddToCart, onAddToWishlist, isInWishlist, view
         <div className="flex items-center justify-between mt-3">
           <span className="text-lg font-bold text-gray-900">${product.price}</span>
           <button
-            onClick={() => onAddToCart(product)}
+            onClick={() =>{ onAddToCart(product)
+              }
+            }
             className="bg-black text-white px-3 py-1 rounded flex items-center gap-1 text-sm hover:bg-gray-800 transition"
           >
             <ShoppingCart size={14} /> Add to Cart

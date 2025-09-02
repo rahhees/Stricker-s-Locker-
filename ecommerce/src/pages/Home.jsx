@@ -8,12 +8,16 @@ import { WishlistContext } from '../Context/WishlistContext';
 import api from '../Api/AxiosInstance';
 
 function Home() {
+
+
+
+  
   const { cart, addToCart } = useContext(CartContext);
   const { wishlist, addToWishlist } = useContext(WishlistContext);
 
   const [products, setProducts] = useState([]);
 
-  // Fetch products
+  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -32,12 +36,7 @@ function Home() {
     <div>
       <Navbar />
       <Banner />
-      <Trending
-        products={products} 
-        onAddToCart={addToCart} 
-        onAddToWishlist={addToWishlist} 
-        isInWishlist={isInWishlist}
-      />
+      <Trending   products={products}    onAddToCart={addToCart}    onAddToWishlist={addToWishlist}    isInWishlist={isInWishlist}   />
       <Footer />
     </div>
   );

@@ -3,45 +3,42 @@ import { useNavigate } from "react-router-dom";
 
 export default function App() {
   const navigate = useNavigate();
-  return (
-    <div className="min-h-screen">
-      <div className="relative w-full h-screen overflow-hidden">
-        {/* Background Image */}
-        <img
-          src="https://images.unsplash.com/photo-1686947079063-f1e7a7dfc6a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb290YmFsbCUyMHN0YWRpdW0lMjBjcm93ZCUyMHNwb3J0c3xlbnwxfHx8fDE3NTY0ODAyOTB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-          alt="Football Stadium Banner"
+      return (
+        
+              <div className="min-h-screen">
+              <div className="relative w-full h-screen overflow-hidden">
+       
+        <img src="../src/assets/Images/stad.jpg" alt="Football Stadium Banner"
           className="w-full h-full object-cover"
         />
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-
-        {/* Content Container */}
         <div className="absolute inset-0 flex flex-col justify-center px-4 md:px-12 lg:px-20">
           <div className="max-w-4xl">
-            {/* Promotional Badges */}
+          
             <div className="flex items-center gap-2 mb-6">
               <div className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md inline-flex items-center gap-1 transition-colors cursor-pointer">
-                🔥 SEASON SALE - UP TO 50% OFF
+                 SEASON SALE - UP TO 50% OFF
               </div>
               <div className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md inline-flex items-center transition-colors cursor-pointer">
                 FREE SHIPPING
               </div>
             </div>
 
-            {/* Main Heading */}
+      
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4 leading-tight">
-              Stricker's
-              <span className="block text-red-500">Locker</span>
+              Wolf
+              <span className="block text-red-500">Athletix</span>
             </h1>
 
-            {/* Subtitle */}
+         
             <p className="text-xl md:text-2xl lg:text-3xl text-gray-200 mb-8 max-w-2xl">
               Gear up for greatness!
             </p>
 
-            {/* Features */}
-            <div className="flex flex-wrap gap-4 mb-8">
+       
+            {/* <div className="flex flex-wrap gap-4 mb-8">
               <div className="flex items-center gap-2 text-white">
                 <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -60,7 +57,7 @@ export default function App() {
                 </svg>
                 <span>Official Licensed</span>
               </div>
-            </div>
+            </div> */}
 
             {/* Call to Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -90,21 +87,21 @@ export default function App() {
 
       {/* ================= Products/Jersey Section ================= */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold mb-8 text-gray-900">Top Jerseys</h2>
+        <h2  id="top-jerseys"  className="text-3xl font-bold mb-8 text-gray-900">Top Jerseys</h2>
 
         {/* Example Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
           {/* Example cards - replace with mapped products */}
-          <div className="bg-white rounded-lg shadow-md p-4">Bayern Munich
+          <div className="bg-white rounded-lg shadow-md p-4">
             <img src="../src/assets/Images/bayern_home.jpg"/>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4">Real Madrid Jersey
+          <div className="bg-white rounded-lg shadow-md p-4">
              <img src="../src/assets/Images/real_home.jpg"/>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4">Liverpool Jersey
+          <div className="bg-white rounded-lg shadow-md p-4">
              <img src="../src/assets/Images/liverpool_home.jpg"/>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4">Barcelona Jersey
+          <div className="bg-white rounded-lg shadow-md p-4">
              <img src="../src/assets/Images/barca_home.jpg"/>
           </div>
         </div>
