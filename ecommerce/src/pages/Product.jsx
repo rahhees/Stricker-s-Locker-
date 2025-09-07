@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import {  Search, Filter,  Grid3X3,List,ShoppingCart, Heart,} from "lucide-react";
+import { Filter, Grid3X3, List } from "lucide-react";
 import api from "../Api/AxiosInstance";
 import { CartContext } from "../Context/CartContext";
 import { WishlistContext } from "../Context/WishlistContext";
 import ProductCard from "../Component/CartDesign";
 import { useNavigate } from "react-router-dom";
-import { SearchContext } from "../Context/SearchContext";
 
 function Product() {
   const [products, setProducts] = useState([]);
@@ -14,14 +13,13 @@ function Product() {
   const [loading, setLoading] = useState(true);
   const [categoryFilter, SetCategoryFilter] = useState("All");
 
-
-  const { wishlist, addToWishlist } = useContext(WishlistContext);
-  const { cart, addToCart } = useContext(CartContext);
-  const { searchTerm, setSearchTerm, appliedSearch, applySearch } = useContext(SearchContext);
-
-  const isInWishlist = (id) => wishlist.some((item) => item.id === id);
+  const { addToWishlist, wishlist } = useContext(WishlistContext);
+  const { addToCart } = useContext(CartContext);
 
   const navigate = useNavigate();
+
+  const isInWishlist = (id) =>
+    wishlist.some((item) => item.id === id);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,32 +36,15 @@ function Product() {
     fetchProducts();
   }, []);
 
-
-  useEffect(() => {
-    console.log("Cart Updated", cart);
-    console.log("Wishlist Updated", wishlist);
-  }, [cart, wishlist]);
-
-  //  search
-
+  // Apply category filter
   let filteredProductss = products.filter((p) => {
-    const query = appliedSearch.toLowerCase();
-    const matchesSearch =
-      query === "" ||
-      p.name.toLowerCase().includes(query) ||
-      p.team?.toLowerCase().includes(query) ||
-      p.category?.toLowerCase().includes(query);
-
-//category
-
-    const matchesCategory =
+    return (
       categoryFilter === "All" ||
-      p.category?.toLowerCase() === categoryFilter.toLowerCase();
-
-    return matchesSearch && matchesCategory;
+      p.category?.toLowerCase() === categoryFilter.toLowerCase()
+    );
   });
 
-  // Sort
+  // Sorting
   filteredProductss = filteredProductss.sort((a, b) => {
     if (sortOption === "Featured")
       return (b.featured === "true") - (a.featured === "true");
@@ -77,133 +58,106 @@ function Product() {
 
   if (loading) {
     return (
-
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-
       </div>
     );
   }
 
   return (
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 pt-25">
+      {/* Filters & Sorting */}
+      <div className="max-w-7xl mx-auto flex flex-col gap-4 mb-6">
+        {/* Sort + Category */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 text-gray-600">
+              <Filter size={16} />
+              <span className="text-sm font-medium">Sort By:</span>
+            </div>
 
-    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
-   
-      <div className="max-w-7xl mx-auto py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Our Products</h1>
-          <p className="text-gray-600 mt-1">
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option>All</option>
+              <option>Featured</option>
+              <option>Newest</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Top Rated</option>
+            </select>
 
-            Discover amazing products at great prices
-          </p>
-        </div>
-
-   
-        <form
-          className="w-full sm:w-80 lg:w-64 relative" onSubmit={(e) => {   e.preventDefault();   applySearch(); }}>
-
-          <input  type="text"   value={searchTerm}   onChange={(e) => setSearchTerm(e.target.value)}   placeholder="Search products..."   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" />
-          <button   type="submit"   className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-1 rounded hover:bg-gray-800" >
-           
-            <Search size={14} />
-
-          </button>
-
-        </form>
-
-      {/* cart and whislist  */}
-
-        <div className="flex items-center gap-3">
-
-          <button    onClick={() => navigate("/CartPage")}    className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"  >   
-             <ShoppingCart size={20} className="text-black-500" />
-
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-              {cart.length}
-            </span>
-            
-          </button>
-
-         <button  onClick={() => navigate("/Wishlist")}    className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"  >
-            <Heart size={20} className="text-black-500" />
-
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-              {wishlist.length}
-            </span>
-
-          </button>
-
-        </div>
-      </div>
-
-        {/* filtering  */}
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-gray-600">
-
-            <Filter size={16} /> <span className="text-sm font-medium">Sort By:</span>
+            <select
+              value={categoryFilter}
+              onChange={(e) => SetCategoryFilter(e.target.value)}
+              className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option>All</option>
+              <option>Balls</option>
+              <option>Jersey</option>
+              <option>Shorts</option>
+              <option>Socks</option>
+              <option>Gloves</option>
+              <option>Accessories</option>
+            </select>
           </div>
 
-          <select  value={sortOption}    onChange={(e) => setSortOption(e.target.value)}    className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"  >
-            
-            <option>All</option>
-            <option>Featured</option>
-            <option>Newest</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Top Rated</option>
-
-          </select>
-
-          {/* Category Filter */}
-          <select   value={categoryFilter}   onChange={(e) => SetCategoryFilter(e.target.value)}   className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" >
-            
-            <option>All</option>
-            <option>Balls</option>
-            <option>Jersey</option>
-            <option>Shorts</option>
-            <option>Socks</option>
-            <option>Gloves</option>
-            <option>Accessories</option>
-
-          </select>
-        </div>
-
-        {/* set grid toggling */}
-
-        <div className="flex items-center gap-3">
-
-          <span className="text-sm font-medium text-gray-600">View:</span>
-          <div className="flex bg-gray-100 rounded-lg p-1">
-
-            <button    onClick={() => setViewMode("grid")}    className={`p-2 rounded-md transition-colors ${      viewMode === "grid"        ? "bg-white text-blue-600 shadow-sm"        : "text-gray-600 hover:text-gray-900"    }`}  >
-              <Grid3X3 size={16} />
-            </button>
-
-            <button  onClick={() => setViewMode("list")}  className={`p-2 rounded-md transition-colors ${    viewMode === "list"      ? "bg-white text-blue-600 shadow-sm"      : "text-gray-600 hover:text-gray-900"  }`}>
-              <List size={16} />
-            </button>
-
+          {/* Toggle grid/list */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-gray-600">View:</span>
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-2 rounded-md transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <Grid3X3 size={16} />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-2 rounded-md transition-colors ${
+                  viewMode === "list"
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <List size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-
-      {/* Products */}
-
+      {/* Product Grid/List */}
       {filteredProductss.length > 0 ? (
-        <div   className={`${     viewMode === "grid"       ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"       : "space-y-4"   } max-w-7xl mx-auto`} >
-
+        <div
+          className={`${
+            viewMode === "grid"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              : "space-y-4"
+          } max-w-7xl mx-auto`}
+        >
           {filteredProductss.map((p) => (
-            <ProductCard    key={p.id}    product={p}    onAddToCart={addToCart}    onAddToWishlist={addToWishlist}    isInWishlist={isInWishlist}    viewMode={viewMode}  />))}
+            <ProductCard
+              key={p.id}
+              product={p}
+              onAddToCart={addToCart}
+              onAddToWishlist={addToWishlist}
+              isInWishlist={isInWishlist}
+              viewMode={viewMode}
+              onClick={() => navigate(`/products/${p.id}`)}
+            />
+          ))}
         </div>
       ) : (
-
         <div className="text-center py-16">
           <p className="text-gray-600">
-            
-            No products found. Try adjusting your search or filters.
+            No products found. Try adjusting your filters.
           </p>
         </div>
       )}

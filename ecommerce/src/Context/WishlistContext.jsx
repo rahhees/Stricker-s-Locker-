@@ -1,96 +1,106 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../Api/AxiosInstance";
+import { toast } from "react-toastify";
 
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
 
-  const [wishlist, setWishlist] = useState([]);
-  const [wishlistLength, setWishlistLength] = useState(0);
+// wishlist with loccal storage
+  
+  const [wishlist, setWishlist] = useState(() => {
+    const savedWishlist = localStorage.getItem("wishlist");
+    return savedWishlist ? JSON.parse(savedWishlist) : [];
+  });
 
-  // --- Load wishlist when user changes ---
+  const [wishlistLength, setWishlistLength] = useState(() =>
+    wishlist.length
+  );
+
+  // Keep the wishlist length
+  
+  useEffect(() => {
+    setWishlistLength(wishlist.length);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  // Load wishlist from API when user changes
+
   useEffect(() => {
     if (!user) {
-      setWishlist([]); // Clear if no user
+      setWishlist([]);
       return;
     }
 
-    async function fetchWishlist() {
+    const fetchWishlist = async () => {
       try {
         const res = await api.get(`/users/${user.id}`);
         setWishlist(res.data.wishlist || []);
-        setWishlistLength(res.data.wishlist?.length || 0);
-      } catch (error) {
-        console.error("Error loading wishlist from DB:", error);
+      } catch (err) {
+        console.error("Error loading wishlist:", err);
       }
-    }
+    };
 
     fetchWishlist();
   }, [user]);
 
-  // --- Update wishlistLength reactively ---
-  useEffect(() => {
-    setWishlistLength(wishlist.length);
-  }, [wishlist]);
+// add to the whislist page
 
-  // --- Add / Remove / Clear wishlist ---
   const addToWishlist = async (product) => {
     setWishlist((prev) => {
       const exists = prev.find((item) => item.id === product.id);
       if (exists) {
-        // If exists, remove it (toggle behavior)
         return prev.filter((item) => item.id !== product.id);
       } else {
         return [...prev, product];
       }
     });
 
-    try {
-      await api.patch(`/users/${user.id}`, {
-        wishlist: [
+    
+    if (user) {
+      try {
+        const updatedWishlist = [
           ...wishlist.filter((item) => item.id !== product.id),
           product,
-        ],
-      });
-    } catch (err) {
-      console.error("Error syncing wishlist:", err);
+        ];
+      
+        await api.patch(`/users/${user.id}`, { wishlist: updatedWishlist });
+      } catch (err) {
+        console.error("Error syncing wishlist:", err);
+      }
+     
     }
   };
+  // remove from whislist 
 
   const removeFromWishlist = async (id) => {
-    const updatedWishlist = wishlist.filter((item) => item.id !== id);
-    setWishlist(updatedWishlist);
+    setWishlist((prev) => {
+      const updatedWishlist = prev.filter((item) => item.id !== id);
+      if (user) {
+        api.patch(`/users/${user.id}`, { wishlist: updatedWishlist }).catch(console.error);
+      }
+      return updatedWishlist;
 
-    try {
-      await api.patch(`/users/${user.id}`, { wishlist: updatedWishlist });
-    } catch (err) {
-      console.error("Error syncing wishlist:", err);
-    }
+    });
+    
+  
   };
+
+  // clearing from the wishlist 
 
   const clearWishlist = async () => {
     setWishlist([]);
-
-    try {
-      await api.patch(`/users/${user.id}`, { wishlist: [] });
-    } catch (err) {
-      console.error("Error syncing wishlist:", err);
+    if (user) {
+      api.patch(`/users/${user.id}`, { wishlist: [] }).catch(console.error);
     }
+  
   };
 
   return (
     <WishlistContext.Provider
-      value={{
-        wishlist,
-        wishlistLength,
-        addToWishlist,
-        removeFromWishlist,
-        clearWishlist,
-        setWishlistLength, // optional if you need it elsewhere
-      }}
-    >
+      value={{   wishlist,   wishlistLength,   addToWishlist,   removeFromWishlist,  clearWishlist, }}>
       {children}
     </WishlistContext.Provider>
   );

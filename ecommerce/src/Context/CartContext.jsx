@@ -1,121 +1,115 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../Api/AxiosInstance";
+import { toast } from "react-toastify";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
-  const [cart, setCart] = useState([]);
-  const [cartLength,setCartLength]=useState(0)
 
-  // Load cart when user changes
+  // Cart state with localStorage
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  const [cartLength, setCartLength] = useState(cart.length);
+
+  // Keep cartLength and localStorage in sync
+  useEffect(() => {
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartLength(cart.length);
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  // Load cart from API when user changes
   useEffect(() => {
     if (!user) {
-      setCart([]); // if no user, clear cart
+      setCart([]);
       return;
     }
 
-
-
-    async function fetchCart() {
+    const fetchCart = async () => {
       try {
         const res = await api.get(`/users/${user.id}`);
         setCart(res.data.cart || []);
-        setCartLength(res.data.cart.length||0)
-      } catch (error) {
-        console.error("Error loading cart from DB:", error);
+      } catch (err) {
+        console.error("Error loading cart:", err);
       }
-    }
+    };
 
     fetchCart();
   }, [user]);
 
-  
-  useEffect(() => {
-    setCartLength(cart.reduce((total, item) => total + item.quantity, 0));
-  }, [cart]);
+//  add to the cart page 
 
 
+const addToCart = async (product) => {
+  setCart((prevCart) => {
+    const existing = prevCart.find((item) => item.id === product.id);
 
-
-  // ---- Cart Actions ----
-
-  // Add product (if exists → +1, else → new)
-  const addToCart = async (product) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.id === product.id);
-      if (existing) {
-        return prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
-
-    try {
-      await api.patch(`/users/${user.id}`, {
-        cart: [
-          ...cart.filter((item) => item.id !== product.id),
-          {
-            ...product,
-            quantity:
-              (cart.find((i) => i.id === product.id)?.quantity || 0) + 1,
-          },
-        ],
-      });
-    } catch (err) {
-      console.error("Error syncing addToCart:", err);
+    if (existing) {
+      // Already in cart → just show toast
+      toast.info("Already in cart!");
+      return prevCart; // no change
     }
-  };
 
-  // Update product quantity
+    const updatedCart = [...prevCart, { ...product, quantity: 1 }];
+
+    if (user) {
+      api.patch(`/users/${user.id}`, { cart: updatedCart }).catch(console.error);
+    }
+
+    toast.success("Added to cart!");
+    return updatedCart;
+  });
+};
+
+  // updatting Quantitty
+
   const updateQuantity = async (id, change) => {
-    const updatedCart = cart
-      .map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + change } : item
-      )
-      .filter((item) => item.quantity > 0);
+    setCart((prevCart) => {
+      const updatedCart = prevCart
+        .map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity + change } : item
+        )
+        .filter((item) => item.quantity > 0);
 
-    setCart(updatedCart);
+      if (user) {
+        api.patch(`/users/${user.id}`, { cart: updatedCart }).catch(console.error);
+      }
 
-    try {
-      await api.patch(`/users/${user.id}`, { cart: updatedCart });
-    } catch (err) {
-      console.error("Error syncing updateQuantity:", err);
-    }
+      return updatedCart;
+    });
   };
 
-  // Remove product
+  // removing fromm the cart
+
   const removeFromCart = async (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
-    setCart(updatedCart);
-
-    try {
-      await api.patch(`/users/${user.id}`, { cart: updatedCart });
-    } catch (err) {
-      console.error("Error syncing removeFromCart:", err);
-    }
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.id !== id);
+      if (user) {
+        api.patch(`/users/${user.id}`, { cart: updatedCart }).catch(console.error);
+      }
+      return updatedCart;
+    });
+    
   };
 
-  // Clear cart
+  // clering from the cartt
+
   const clearCart = async () => {
     setCart([]);
-
-    try {
-      await api.patch(`/users/${user.id}`, { cart: [] });
-    } catch (err) {
-      console.error("Error syncing clearCart:", err);
+    if (user) {
+      api.patch(`/users/${user.id}`, { cart: [] }).catch(console.error);
     }
+    toast.info("Cart is Empty...")
   };
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart,cartLength,setCartLength }}
-    >
+      value={{  cart,  addToCart,  updateQuantity,  removeFromCart,  clearCart,  cartLength,}}>
       {children}
     </CartContext.Provider>
   );

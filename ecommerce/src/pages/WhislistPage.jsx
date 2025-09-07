@@ -11,6 +11,7 @@ function WishlistPage() {
  
 
   // check if product is already in wishlist
+
   const isInWishlist = (id) => wishlist.some((item) => item.id === id);
 
   return (
@@ -22,14 +23,9 @@ function WishlistPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {wishlist.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={addToCart}
-              onAddToWishlist={addToWishlist}
+            <ProductCard key={product.id} product={product} onAddToCart={addToCart} onAddToWishlist={addToWishlist}
               isInWishlist={isInWishlist}
-              viewMode="grid" 
-            />
+              viewMode="grid"/>
           ))}
         </div>
       )}

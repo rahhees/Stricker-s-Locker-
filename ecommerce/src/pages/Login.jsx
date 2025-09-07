@@ -34,7 +34,10 @@ const initialState = {
   password: "",
   confirmPassword: "",
   cart:[],
-  wishlist:[]
+  wishlist:[],
+  order:[],
+  shippingaddress:{}
+
 };
 
 function AuthPage() {

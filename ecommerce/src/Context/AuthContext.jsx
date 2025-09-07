@@ -1,5 +1,6 @@
 import React, { createContext, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   
   const loginuser = async (loginEmail, loginPassword) => {
     if (!loginEmail || !loginPassword) {
-      setLoginError("Please fill in both fields ❌");
+      setLoginError("Please fill in both fields ");
       return { success: false };
     }
 
@@ -26,24 +27,27 @@ export const AuthProvider = ({ children }) => {
       if (response.data.length > 0) {
         const loggedUser = response.data[0];
         setUser(loggedUser);
+        
         localStorage.setItem("user", JSON.stringify(loggedUser.id));
         setLoginError("");
         return { success: true };
       } else {
-        setLoginError("Invalid credentials ❌");
+        setLoginError("Invalid credentials ");
         return { success: false };
       }
     } catch (error) {
       console.error("Login error:", error);
-      setLoginError("Something went wrong ❌");
+      setLoginError("Something went wrong ");
       return { success: false };
     }
   };
 
   //  LOGOUT function
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    toast.info("Logout Successfully...")
     
   };
 
