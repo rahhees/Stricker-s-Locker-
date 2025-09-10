@@ -5,6 +5,9 @@ import { Check, Lock } from "lucide-react";
 // Assuming you have a CartContext.js file in this path
 import { CartContext } from "../Context/CartContext";
 
+
+
+
 function CartPage() {
   // Destructure state and functions from the CartContext
   const { cart, updateQuantity, removeFromCart } = useContext(CartContext);
@@ -21,10 +24,10 @@ function CartPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center py-12">
+    <div className="min-h-screen bg-white-300 flex justify-center  mt-30">
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
         {/* Step-by-Step Header */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-18">
           <div className="flex items-center space-x-4">
             <div className="flex flex-col items-center">
               <div className="bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
@@ -105,8 +108,7 @@ function CartPage() {
                         </div>
                         <button
                           onClick={() => removeFromCart(item.id)}
-                          className="text-red-600 text-sm mt-2"
-                        >
+                          className="text-red-600 text-sm mt-2">
                           Remove
                         </button>
                       </div>

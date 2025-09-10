@@ -1,15 +1,28 @@
 // ProductDetails.jsx
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../Api/AxiosInstance";
 import { ShoppingCart, Star, Heart, Share2, Shield, Truck, RotateCcw, Award, Link } from "lucide-react";
+import { CartContext } from "../Context/CartContext";
+import { WishlistContext } from "../Context/WishlistContext";
 
 function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState();
+
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+
+  const {addToCart} = useContext(CartContext)
+  const {addToWishlist} = useContext(WishlistContext)
+
+
+   const handleWishlist = () => {
+    addToWishlist(product);
+    setIsWishlisted(!isWishlisted);
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -23,11 +36,20 @@ function ProductDetails() {
     fetchProduct();
   }, [id]);
 
+
+  const navigate = useNavigate()
+
+  const handleBuy = ()=>{
+   navigate("/Shipping", {
+    state: { product, quantity }
+  });
+};
+
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 ">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-black mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-black mx-auto mb-4 "></div>
           <p className="text-xl text-gray-600">Loading amazing product...</p>
         </div>
       </div>
@@ -36,22 +58,18 @@ function ProductDetails() {
 
   // Mock additional images for demo
 // If product.images exists, use that, otherwise fallback
-const productImages = product.images
-  ? (Array.isArray(product.images) ? product.images : [product.images])
+
+const productImages = product.images  ? (Array.isArray(product.images) ? product.images : [product.images])
   : [product.image || "https://via.placeholder.com/600x600"];
 
 
 
-  const handleAddToCart = () => {
-    // Add cart logic here
-    console.log(`Added ${quantity} of ${product.name} to cart`);
-  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="min-h-screen  from-gray-50 via-white to-gray-100 mt-10">
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-4 pt-6">
-        <nav className="text-sm text-gray-500 mb-4">
+        <nav className="text-sm text-gray-500 mb-4 ">
           <span>Home</span> <span className="mx-2">></span> 
           <span>Products</span> <span className="mx-2">></span>
           <span className="text-gray-900 font-medium">{product.name}</span>
@@ -74,7 +92,7 @@ const productImages = product.images
                 
                 {/* Wishlist Button */}
                 <button
-                  onClick={() => setIsWishlisted(!isWishlisted)}
+                  onClick={handleWishlist}
                   className="absolute top-6 right-6 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-200"
                 >
                   <Heart 
@@ -83,10 +101,6 @@ const productImages = product.images
                   />
                 </button>
 
-                {/* Share Button */}
-                <button className="absolute top-6 right-20 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-200">
-                  <Share2 size={20} className="text-gray-600 hover:text-blue-500" />
-                </button>
               </div>
             </div>
 
@@ -140,9 +154,7 @@ const productImages = product.images
                   />
                 ))}
               </div>
-              <span className="text-gray-600 font-medium">
-                {product.rating?.toFixed(1) || "4.5"} ({Math.floor(Math.random() * 500) + 100} reviews)
-              </span>
+           
             </div>
 
             {/* Price */}
@@ -154,45 +166,44 @@ const productImages = product.images
               </span>
             </div>
 
-            {/* Description */}
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
-              <p className="text-gray-700 leading-relaxed">
-                {product.description || "Experience premium quality with this carefully crafted product. Designed with attention to detail and built to last, this item combines functionality with style to meet your needs perfectly."}
-              </p>
-            </div>
 
             {/* Quantity Selector */}
-            <div className="flex items-center gap-4">
-              <span className="font-medium text-gray-900">Quantity:</span>
-              <div className="flex items-center border-2 border-gray-200 rounded-full">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-l-full transition-colors"
-                >
-                  -
-                </button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-r-full transition-colors"
-                >
-                  +
-                </button>
-              </div>
-            </div>
+          <div className="flex items-center gap-4">
+  <span className="font-medium text-gray-900">Quantity:</span>
+  <div className="flex items-center border-2 border-gray-200 rounded-full">
+    <button
+      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+      className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-l-full transition-colors"
+    >
+      -
+    </button>
+    <span className="w-12 text-center font-medium">{quantity}</span>
+    <button
+      onClick={() => setQuantity(quantity + 1)}
+      className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-r-full transition-colors"
+    >
+      +
+    </button>
+  </div>
+
+  {/* 💰 Show total price */}
+  <span className="ml-4 font-semibold text-lg text-gray-900">
+     ₹{(product.price * quantity).toFixed(2)}
+  </span>
+</div>
+
 
             {/* Action Buttons */}
             <div className="space-y-3">
               <button
-                onClick={handleAddToCart}
+                onClick={()=>addToCart(product)}
                 className="w-full bg-black text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-3 hover:bg-gray-800 transform hover:scale-105 transition-all duration-200 shadow-lg"
               >
                 <ShoppingCart size={24} />
                 Add to Cart
               </button>
               
-              <button className="w-full bg-gray-100 text-gray-900 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-200 transition-all duration-200">
+              <button onClick={handleBuy} className="w-full bg-gray-100 text-gray-900 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-200 transition-all duration-200">
                 Buy Now
               </button>
             </div>

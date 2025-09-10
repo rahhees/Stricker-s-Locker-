@@ -28,7 +28,7 @@ export const CartProvider = ({ children }) => {
     if (!user) {
       setCart([]);
       return;
-    }
+    } 
 
     const fetchCart = async () => {
       try {
@@ -46,6 +46,10 @@ export const CartProvider = ({ children }) => {
 
 
 const addToCart = async (product) => {
+  if(!user){
+    toast.error("Please log in to  add items to your cart!");
+    return
+  }
   setCart((prevCart) => {
     const existing = prevCart.find((item) => item.id === product.id);
 

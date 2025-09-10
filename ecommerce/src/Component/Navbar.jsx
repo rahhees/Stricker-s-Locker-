@@ -5,7 +5,8 @@ import { CartContext } from "../Context/CartContext";
 import { SearchContext } from "../Context/SearchContext";
 import { WishlistContext } from "../Context/WishlistContext";
 import { toast } from "react-toastify";
-import api from "../Api/AxiosInstance";   // ✅ axios instance
+import api from "../Api/AxiosInstance";  
+import { AuthContext } from "../Context/AuthContext";
 
 const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
@@ -13,6 +14,7 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const {user}=useContext(AuthContext)
 
   const profileRef = useRef(null);
   const mobileMenuRef = useRef(null);
@@ -220,7 +222,7 @@ const Navbar = () => {
               </button>
 
               {/* Profile Dropdown */}
-              <div className="relative hidden lg:block" ref={profileRef}>
+              <div  className={`${user ? "display" : "relative hidden lg:block"}`} ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-red-600 transition-all duration-300 rounded-full hover:bg-red-50 group"
@@ -238,7 +240,7 @@ const Navbar = () => {
                       My Profile
                     </button>
                     <button
-                      onClick={() => handleNavigate("/orders")}
+                      onClick={() => handleNavigate("/Order")}
                       className="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-red-600 transition-all duration-200"
                     >
                       Order History
@@ -339,6 +341,12 @@ const Navbar = () => {
               ))}
 
               <hr className="border-gray-200/50 my-3" />
+                 <button
+                onClick={() => handleNavigate("/profile")}
+                className="block w-full text-left py-3 px-4 text-gray-700 hover:text-red-600 hover:bg-red-50/50 font-medium transition-all duration-200 rounded-full"
+              >
+                My Profile
+              </button>
 
               <button
                 onClick={() => handleNavigate("/profile")}

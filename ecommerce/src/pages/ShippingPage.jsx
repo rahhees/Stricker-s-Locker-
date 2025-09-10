@@ -1,12 +1,8 @@
-import React, { useContext, useReducer } from "react";
+import React, { useContext, useReducer, useState } from "react";
 import api from "../Api/AxiosInstance";
 import { AuthContext } from "../Context/AuthContext";
 import { CartContext } from "../Context/CartContext";
-import { Check, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-
-
+import { useLocation, useNavigate } from "react-router-dom";
 
 const initialState = {
   firstname: "",
@@ -35,10 +31,16 @@ const reducer = (state, action) => {
 
 function ShippingPage() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const location = useLocation();
+
+  const { product, quantity } = location.state || {};
+
   const { user } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
 
-  const navigate =useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     dispatch({
@@ -52,26 +54,23 @@ function ShippingPage() {
     e.preventDefault();
     const newShipping = { ...state };
 
- console.log("Attempting to save shipping address:", { userId: user?.id, data: newShipping });    try {
-      if (!user) {
-        alert("⚠️ User not logged in");
-        return;
-      }
+    if (!user) {
+      alert("⚠️ User not logged in");
+      return;
+    }
 
-      await api.patch(`/users/${user.id}`, {
-      
-        shippingaddress: newShipping,
-      });
-
+    try {
+      await api.patch(`/users/${user.id}`, { shippingaddress: newShipping });
       alert("✅ Shipping address saved successfully!");
       dispatch({ type: "RESET" });
+      setIsSaved(true);
     } catch (err) {
       console.error("❌ Error saving shipping address:", err);
       alert("Failed to save shipping address");
     }
   };
 
-  // Calculate totals based on cart items
+  // Cart totals
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -80,12 +79,12 @@ function ShippingPage() {
   const total = subtotal + tax;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center py-12">
+    <div className="min-h-screen bg-gray-100 flex justify-center py-12 mt-14">
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Step-by-Step Header */}
+        {/* Stepper */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center space-x-4">
-            {/* Step 1: Cart (Completed) */}
+            {/* Step 1: Cart */}
             <div className="flex flex-col items-center">
               <div className="bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
                 1
@@ -94,7 +93,7 @@ function ShippingPage() {
             </div>
             <div className="h-0.5 w-16 bg-red-600 mt-3" />
 
-            {/* Step 2: Shipping (Active) */}
+            {/* Step 2: Shipping */}
             <div className="flex flex-col items-center">
               <div className="bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
                 2
@@ -102,7 +101,7 @@ function ShippingPage() {
               <span className="text-red-600 text-xs mt-1">Shipping</span>
             </div>
 
-            {/* Step 3: Payment (Inactive) */}
+            {/* Step 3: Payment */}
             <div className="h-0.5 w-16 bg-gray-300 mt-3" />
             <div className="flex flex-col items-center text-gray-400">
               <div className="bg-gray-200 text-gray-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
@@ -110,7 +109,8 @@ function ShippingPage() {
               </div>
               <span className="text-xs mt-1">Payment</span>
             </div>
-            {/* Step 4: Confirmation (Inactive) */}
+
+            {/* Step 4: Confirmation */}
             <div className="h-0.5 w-16 bg-gray-300 mt-3" />
             <div className="flex flex-col items-center text-gray-400">
               <div className="bg-gray-200 text-gray-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
@@ -121,9 +121,9 @@ function ShippingPage() {
           </div>
         </div>
 
-        {/* Main Content Grid */}
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Left column - Shipping Form */}
+          {/* Left: Form */}
           <div className="md:col-span-2 bg-white shadow-md rounded-lg p-6">
             <h2 className="text-2xl font-bold mb-6">Shipping Information</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -257,41 +257,50 @@ function ShippingPage() {
             </form>
           </div>
 
-          {/* Right column - Order Summary */}
+          {/* Right: Order Summary */}
           <div className="bg-white shadow-md rounded-lg p-6 h-fit">
             <h3 className="text-xl font-bold mb-4">Order Summary</h3>
 
-            {/* Scrollable cart items */}
+            {/* Items */}
             <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
-              {cart.length > 0 ? (
+              {product ? (
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={product.image || "https://via.placeholder.com/60"}
+                      alt={product.name}
+                      className="w-16 h-16 rounded object-cover"
+                    />
+                    <div>
+                      <p className="font-medium">{product.name}</p>
+                      <p className="text-sm text-gray-500">Qty: {quantity}</p>
+                    </div>
+                  </div>
+                  <p className="font-semibold text-right whitespace-nowrap">
+                    ₹{(product.price * quantity).toFixed(2)}
+                  </p>
+                </div>
+              ) : cart.length > 0 ? (
                 cart.map((item) => (
                   <div
                     key={item.id}
                     className="flex items-center justify-between gap-4"
                   >
-                    {/* Left side: Image + text */}
                     <div className="flex items-center gap-3">
                       <img
-                        src={
-                          item.image ||
-                          item.productImage ||
-                          "https://via.placeholder.com/60"
-                        }
+                        src={item.image || "https://via.placeholder.com/60"}
                         alt={item.name}
                         className="w-16 h-16 rounded object-cover"
                       />
                       <div>
                         <p className="font-medium">{item.name}</p>
                         <p className="text-sm text-gray-500">
-                          {item.size ? `Size: ${item.size} | ` : ""}
                           Qty: {item.quantity}
                         </p>
                       </div>
                     </div>
-
-                    {/* Right side: Price */}
                     <p className="font-semibold text-right whitespace-nowrap">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ₹{(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 ))
@@ -302,31 +311,56 @@ function ShippingPage() {
 
             {/* Totals */}
             <div className="border-t mt-4 pt-4 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Shipping</span>
-                <span className="text-green-600">FREE</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>${tax.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-            </div>
-            {/* Added for consistency with previous designs */}
-           <button
-  onClick={() => navigate('/Payment')}
-  className="w-full mt-6 bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-red-700"
->
-  Proceed to Payment
-</button>
+              {product ? (
+                <>
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>₹{(product.price * quantity).toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span className="text-green-600">FREE</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
+                    <span>Total</span>
+                    <span>₹{(product.price * quantity).toFixed(2)}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>₹{subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span className="text-green-600">FREE</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Tax</span>
+                    <span>₹{tax.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
+                    <span>Total</span>
+                    <span>₹{total.toFixed(2)}</span>
+                  </div>
+                </>
+              )}
 
+              {/* Proceed */}
+              <button
+                className={`w-full mt-6 py-3 rounded-md font-semibold 
+                  ${
+                    isSaved
+                      ? "bg-red-600 text-white hover:bg-red-700"
+                      : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                  }`}
+                disabled={!isSaved}
+                onClick={() => navigate("/Payment", { replace:true, state: { product, quantity, cart } })}
+              >
+                Proceed to Payment
+              </button>
+            </div>
           </div>
         </div>
       </div>

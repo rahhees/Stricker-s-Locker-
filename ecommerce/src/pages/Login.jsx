@@ -33,10 +33,11 @@ const initialState = {
   email: "",
   password: "",
   confirmPassword: "",
+  role:"user",
   cart:[],
   wishlist:[],
   order:[],
-  shippingaddress:{}
+  shippingaddress:{},
 
 };
 

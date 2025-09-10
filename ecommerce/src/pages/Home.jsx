@@ -6,18 +6,20 @@ import Trending from '../Component/Trending';
 import { CartContext } from '../Context/CartContext';
 import { WishlistContext } from '../Context/WishlistContext';
 import api from '../Api/AxiosInstance';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../Context/AuthContext';
 
 function Home() {
 
-
-
-  
   const { cart, addToCart } = useContext(CartContext);
   const { wishlist, addToWishlist } = useContext(WishlistContext);
 
   const [products, setProducts] = useState([]);
 
-  
+
+
+
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
