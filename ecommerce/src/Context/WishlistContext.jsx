@@ -2,11 +2,14 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../Api/AxiosInstance";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
+
+  const navigate = useNavigate()
 
 // wishlist with loccal storage
   
@@ -15,8 +18,7 @@ export const WishlistProvider = ({ children }) => {
     return savedWishlist ? JSON.parse(savedWishlist) : [];
   });
 
-  const [wishlistLength, setWishlistLength] = useState(() =>
-    wishlist.length
+  const [wishlistLength, setWishlistLength] = useState(() =>wishlist.length
   );
 
   // Keep the wishlist length
@@ -31,6 +33,7 @@ export const WishlistProvider = ({ children }) => {
   useEffect(() => {
     if (!user) {
       setWishlist([]);
+      navigate('/login')
       return;
     }
 
@@ -52,11 +55,17 @@ export const WishlistProvider = ({ children }) => {
     setWishlist((prev) => {
       const exists = prev.find((item) => item.id === product.id);
       if (exists) {
+        toast.info("Removed From The Wishlist")
         return prev.filter((item) => item.id !== product.id);
+         
       } else {
+        toast.success("Added To The Wishlist")
         return [...prev, product];
+
       }
+      
     });
+   
 
     
     if (user) {
@@ -69,6 +78,7 @@ export const WishlistProvider = ({ children }) => {
         await api.patch(`/users/${user.id}`, { wishlist: updatedWishlist });
       } catch (err) {
         console.error("Error syncing wishlist:", err);
+        toast.error("Failed To Update Wishlist")
       }
      
     }
@@ -78,12 +88,15 @@ export const WishlistProvider = ({ children }) => {
   const removeFromWishlist = async (id) => {
     setWishlist((prev) => {
       const updatedWishlist = prev.filter((item) => item.id !== id);
+      toast.info("Removed From Wishlist")
       if (user) {
         api.patch(`/users/${user.id}`, { wishlist: updatedWishlist }).catch(console.error);
+        toast.error("Failed To Remove From Wishlist")
       }
       return updatedWishlist;
 
     });
+
     
   
   };

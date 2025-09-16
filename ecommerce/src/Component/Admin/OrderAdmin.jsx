@@ -11,14 +11,7 @@ function OrderAdmin() {
         console.log("Users fetched:", res.data);
 
         const allOrders = res.data.flatMap((user) => {
-          return (user.order || []).map((order) => ({
-            ...order,
-            user: {
-              id: user.id,
-              name: `${user.firstName} ${user.lastName}`,
-              email: user.email,
-            },
-          }));
+          return (user.order || []).map((order) => ({   ...order,   user: {     id: user.id,     name: `${user.firstName} ${user.lastName}`,     email: user.email,   }, }));
         });
 
         setOrders(allOrders);
@@ -63,24 +56,23 @@ function OrderAdmin() {
                     </div>
                   </td>
                   <td className="p-3">
+
                     {Array.isArray(o.items) && o.items.length > 0 ? (
                       <div className="space-y-2">
                         {o.items.map((p, j) => (
                           <div key={j} className="flex items-center gap-2">
-                            <img
-                              src={p.image}
-                              alt={p.name}
-                              className="w-10 h-10 object-cover rounded-md border"
-                            />
+                            <img  src={p.image}  alt={p.name}  className="w-10 h-10 object-cover rounded-md border"/>
                             <span className="text-gray-700">
+
                               {p.name}{" "}
                               <span className="text-xs text-gray-500">
                                 (x{p.quantity})
-                              </span>
                             </span>
-                          </div>
+                            </span>
+                            </div>
                         ))}
                       </div>
+
                     ) : (
                       <span className="text-gray-400 italic">No products</span>
                     )}
@@ -89,17 +81,13 @@ function OrderAdmin() {
                     ₹{o.amount}
                   </td>
                   <td className="p-3">
+
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        o.status === "Delivered"
-                          ? "bg-green-100 text-green-700"
-                          : o.status === "Pending"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
+                        o.status === "Delivered" ? "bg-green-100 text-green-700" : o.status === "Pending" ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700" }`}>
                       {o.status}
                     </span>
+                    
                   </td>
                   <td className="p-3 text-gray-600">
                     {new Date(o.date).toLocaleString()}

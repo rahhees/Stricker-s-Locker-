@@ -13,6 +13,7 @@ const ProfilePage = () => {
     const fetchUser = async () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (!storedUser){
+        toast.error("You Are Not Logged in! ")
         navigate("/login")
          return;
       }
@@ -98,66 +99,29 @@ return
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            <input
-              type="text"
-              name="firstName"
-              value={users.firstName}
-              onChange={handleChange}
-              placeholder="First Name"
-              className="w-full p-2 border rounded-md"
-            />
-            <input
-              type="text"
-              name="lastName"
-              value={users.lastName}
-              onChange={handleChange}
-              placeholder="Last Name"
-              className="w-full p-2 border rounded-md"
-            />
-            <input
-              type="email"
-              name="email"
-              value={users.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className="w-full p-2 border rounded-md"
-            />
-            <input
-              type="password"
-              name="password"
-              value={users.password}
-              onChange={handleChange}
-              placeholder="Password"
-              className="w-full p-2 border rounded-md"
-           />
 
-            {/* Image Upload */}
+          <div className="space-y-4">
+            <input    type="text"    name="firstName"    value={users.firstName}    onChange={handleChange}    placeholder="First Name"    className="w-full p-2 border rounded-md"  />
+            <input  type="text"  name="lastName"  value={users.lastName}  onChange={handleChange}  placeholder="Last Name"  className="w-full p-2 border rounded-md"/>
+            <input  type="email"  name="email"  value={users.email}  onChange={handleChange}  placeholder="Email"  className="w-full p-2 border rounded-md"/>
+            <input   type="password"   name="password"   value={users.password}   onChange={handleChange}   placeholder="Password"   className="w-full p-2 border rounded-md"/>
+
+            {/* Image Uploadded ...*/}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-               
               </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="block w-full text-sm text-gray-600"
-              />
+              <input   type="file"   accept="image/*"   onChange={handleImageChange}   className="block w-full text-sm text-gray-600" />
             
             </div>
 
             {/* Action Buttons */}
+            
             <div className="flex gap-3 mt-4">
-              <button
-                onClick={handleSave}
-                className="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-              >
+              <button   onClick={handleSave}   className="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition" >
                 Save
               </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="flex-1 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
-              >
+              <button  onClick={() => setIsEditing(false)}  className="flex-1 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition">
                 Cancel
               </button>
             </div>

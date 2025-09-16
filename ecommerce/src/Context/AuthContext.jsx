@@ -6,9 +6,9 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null
-  );
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
   const [loginError, setLoginError] = useState("");
+  
 
   // LOGIN function
   
@@ -40,6 +40,13 @@ export const AuthProvider = ({ children }) => {
       return { success: false };
     }
   };
+
+
+  // login admin
+  const loginAdmin = (adminData) =>{
+    setUser(adminData);
+    localStorage.setitem("User",JSON.stringify(adminData))
+  }
 
   //  LOGOUT function
 

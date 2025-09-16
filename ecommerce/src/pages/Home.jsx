@@ -17,6 +17,7 @@ function Home() {
   const [products, setProducts] = useState([]);
 
 
+console.log("in home page");
 
 
 

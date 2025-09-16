@@ -62,6 +62,7 @@ const ViewUsers = () => {
               ))}
             </tr>
           </thead>
+
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-gray-50 transition duration-150">
@@ -80,23 +81,18 @@ const ViewUsers = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap space-x-2">
-                  <button
-                    onClick={() => toggleBlock(user.id, user.blocked)}
-                    className={`px-4 py-2 rounded-md text-white font-semibold transition-colors duration-200 ${
-                      user.blocked ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"
-                    }`}
-                  >
+                  <button  onClick={() => toggleBlock(user.id, user.blocked)}  className={`px-4 py-2 rounded-md text-white font-semibold transition-colors duration-200 ${    user.blocked ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"  }`}>
                     {user.blocked ? "Unblock" : "Block"}
                   </button>
-                  <button
-                    onClick={() => deleteUser(user.id)}
-                    className="px-4 py-2 rounded-md bg-gray-700 text-white font-semibold hover:bg-gray-800 transition-colors duration-200"
-                  >
+
+                  <button  onClick={() => deleteUser(user.id)}  className="px-4 py-2 rounded-md bg-gray-700 text-white font-semibold hover:bg-gray-800 transition-colors duration-200">
                     Delete
                   </button>
+
                 </td>
               </tr>
             ))}
+            
             {users.length === 0 && (
               <tr>
                 <td colSpan="5" className="text-center p-6 text-gray-500">

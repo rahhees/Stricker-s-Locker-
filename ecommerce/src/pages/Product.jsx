@@ -13,6 +13,7 @@ function Product() {
   const [loading, setLoading] = useState(true);
   const [categoryFilter, SetCategoryFilter] = useState("All");
 
+
   const { addToWishlist, wishlist } = useContext(WishlistContext);
   const { addToCart } = useContext(CartContext);
 
@@ -37,14 +38,17 @@ function Product() {
   }, []);
 
   // Apply category filter
+
   let filteredProductss = products.filter((p) => {
     return (
       categoryFilter === "All" ||
       p.category?.toLowerCase() === categoryFilter.toLowerCase()
     );
-  });
+  }
+);
 
   // Sorting
+
   filteredProductss = filteredProductss.sort((a, b) => {
     if (sortOption === "Featured")
       return (b.featured === "true") - (a.featured === "true");
@@ -160,7 +164,7 @@ function Product() {
             No products found. Try adjusting your filters.
           </p>
         </div>
-      )}
+      )}  
     </div>
   );
 }

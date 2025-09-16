@@ -1,5 +1,5 @@
-import { lazy, Suspense, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import { AuthProvider } from './Context/AuthContext';
@@ -26,80 +26,116 @@ import LoginAdmin from './Component/Admin/LoginAdmin';
 import OrderAdmin from './Component/Admin/OrderAdmin';
 import NewProduct from './Component/Admin/NewProduct';
 import AboutPage from './pages/AboutPage';
-import { Users } from 'lucide-react';
 import ViewUsers from './Component/Admin/ViewUsers';
 import AdminDashboard from './Component/Admin/AdminDashboard';
+import footballAnimation from './animation/Football Animation with the Path.json'
+import Lottie from 'lottie-react';
+
+// Football-themed loading component
+
+       
+
+const Product = lazy(() => import("./pages/Product"));
 
 
-const Product=lazy(function(){
-  return import("./pages/Product")
-})
+
+
+  
 
 function App() {
   const location = useLocation();
 
-  // Hide Navbar on login page
-  const hideNavbarPaths = ['/login','/admin','/Dashboard','/OrderAdmin','/AddProduct','/ViewProduct','/NewProduct','/ViewUsers'];
+  const hideNavbarPaths = [
+    '/login',
+    '/admin/login',
+    '/admin/dashboard',
+    '/admin/users',
+    '/admin/orderadmin',
+    '/admin/productadmin',
+    '/admin/newproductadmin',
+    '/404'
+  ];
 
+
+  
   return (
     <>
-    
-{/* </Route> */}
-    <Suspense fallback={<div>loading</div>}>
-    <SearchProvider>
-      <AuthProvider>
-        <WishlistProvider>
-          <CartProvider>
-            <OrderProvider>
-              <ToastContainer position='top-right' autoClose={2000} />
+      <Suspense fallback={<Animation />}>
+        <SearchProvider>
+          <AuthProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <OrderProvider>
+                  <ToastContainer position='top-right' autoClose={2000} />
 
-              {/* Render Navbar conditionally */}
-              {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
+                  {/* Show Navbar only if path is not in hidden list */}
+                  {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
 
-              <Routes>
-                {/* Public route */}
-                <Route path="/login" element={<Login />} />
+                  <Routes>
 
+                    {/* Public pages */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/products" element={<Product />} />
+                    <Route path='/products/:id' element={<ProductDetails />} />
+                    <Route path='/contact' element={<ContactPage />} />
+                    <Route path='/about' element={<AboutPage />} />
 
+                    {/* Auth routes (public) */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+                    <Route path="/admin/login" element={<LoginAdmin />} />
 
-    <Route path="/admin" element={<LoginAdmin />} />
-    <Route path="/ViewProduct" element={<AddProduct/>}/>
-    <Route path='/OrderAdmin' element={<OrderAdmin/>}/>
-    <Route path='/NewProduct' element={<NewProduct/>}/>
-    <Route path='/ViewUsers' element={<ViewUsers/>}/>
-    <Route path='/Dashboard' element={<AdminDashboard/>}/>
+                    {/* Admin protected routes */}
+                    <Route element={<ProtectedRoute roles={['admin']} />}>
+                      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                      <Route path="/admin/orderadmin" element={<OrderAdmin />} />
+                      <Route path="/admin/productadmin" element={<AddProduct />} />
+                      <Route path="/admin/newproductadmin" element={<NewProduct />} />
+                      <Route path="/admin/users" element={<ViewUsers />} />
+                    </Route>
 
+                    {/* User protected routes */}
+                    <Route element={<ProtectedRoute />}>
+                      <Route path='/cartpage' element={<Cart />} />
+                      <Route path='/trending' element={<Trending />} />
+                      <Route path='/wishlist' element={<WhislistPage />} />
+                      <Route path='/shipping' element={<ShippingPage />} />
+                      <Route path='/profile' element={<ProfilePage />} />
+                      <Route path='/payment' element={<PaymentPage />} />
+                      <Route path='/confirmation' element={<ConfirmationPage />} />
+                      <Route path='/order' element={<OrderDetails />} />
+                    </Route>
 
-                {/* Protected routes */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path='/CartPage' element={<Cart />} />
-                  <Route path='/Trending' element={<Trending />} />
-                  <Route path='/Wishlist' element={<WhislistPage />} />
-                  <Route path='/Shipping' element={<ShippingPage />} />
-                  <Route path='/Profile' element={<ProfilePage />} />
-                  <Route path='/Payment' element={<PaymentPage />} />
-                  <Route path='/Confirmation' element={<ConfirmationPage />} />
-                  <Route path='/Order' element={<OrderDetails/>}/>
-                </Route>
+                    {/* 404 page */}
+                    <Route path="/404" element={<h1>404 Page Not Found</h1>} />
+                    <Route path="*" element={<Navigate to="/404" replace />} />
 
-                {/* Public pages */}
-                <Route path="/" element={<Home />} />
-                <Route path="/products" element={<Product />} />
-                <Route path='/products/:id' element={<ProductDetails />} />
-                <Route path= '/Contact' element={<ContactPage/>}/>
-                <Route path='about' element={<AboutPage/>}/>
-                
-                {/* 404 */}
-                <Route path='*' element={<h1>404 Page Not Found</h1>} />
-              </Routes>
-            </OrderProvider>
-          </CartProvider>
-        </WishlistProvider>
-      </AuthProvider>
-    </SearchProvider>
-    </Suspense>
-</>
+                  </Routes>
+                </OrderProvider>
+              </CartProvider>
+            </WishlistProvider>
+          </AuthProvider>
+        </SearchProvider>
+      </Suspense>
+    </>
   );
 }
+
+const Animation = () => {
+  const [start, setStart] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setStart(true), 2000); // start after 2s
+    return () => clearTimeout(timer);
+  }, []);
+
+  return start ? (
+    <Lottie
+      animationData={footballAnimation}
+      loop={true}
+      style={{ width: 200, height: 200, margin: 'auto', marginTop: '20%' }}
+    />
+  ) : null;
+};
 
 export default App;

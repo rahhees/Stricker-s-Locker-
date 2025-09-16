@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../Api/AxiosInstance";
 import { toast } from "react-toastify";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const CartContext = createContext();
 
@@ -42,21 +43,23 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, [user]);
 
+  const navigate= useNavigate()
+
 //  add to the cart page 
 
 
 const addToCart = async (product) => {
   if(!user){
     toast.error("Please log in to  add items to your cart!");
-    return
+    navigate("/login")
+    return 
   }
   setCart((prevCart) => {
     const existing = prevCart.find((item) => item.id === product.id);
 
     if (existing) {
-      // Already in cart → just show toast
       toast.info("Already in cart!");
-      return prevCart; // no change
+      return prevCart; 
     }
 
     const updatedCart = [...prevCart, { ...product, quantity: 1 }];
