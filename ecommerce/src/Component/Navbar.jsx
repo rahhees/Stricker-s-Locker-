@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Search, User, ShoppingCart, Heart, Menu, X, Trophy, Shirt } from "lucide-react";
+import { Search, User, ShoppingCart, Heart, Menu, X, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../Context/CartContext";
 import { SearchContext } from "../Context/SearchContext";
@@ -109,7 +109,7 @@ const Navbar = () => {
   return (
     <div className="fixed top-0 left-0 w-full z-50 px-4 pt-4">
       <nav
-        className={`max-w-6xl mx-auto bg-gradient-to-r from-gray-900 to-black/95 backdrop-blur-lg rounded-full border border-gray-700/50 shadow-2xl transition-all duration-500 ease-in-out
+        className={`max-w-6xl mx-auto bg-gradient-to-r from-gray-900 to-black/95 backdrop-blur-lg rounded-full border border-gray-700/50 shadow-2xl 
         ${isScrolled ? "shadow-xl bg-gray-900/95" : "shadow-2xl"}`} >
         <div className="px-6 sm:px-8">
           <div className="flex justify-between items-center h-16">
@@ -118,14 +118,12 @@ const Navbar = () => {
               onClick={() => handleNavigate("/")}
               className="flex items-center cursor-pointer py-2 group"
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center mr-3 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105 border border-red-500/30">
              
-              </div>
               <div>
                 <div className="text-lg font-bold text-white leading-none group-hover:text-red-400 transition-colors">
                   Wolf Athletix
                 </div>
-                <div className="text-xs text-gray-400 leading-none">Premium Football Gear</div>
+
               </div>
             </div>
 
@@ -133,8 +131,8 @@ const Navbar = () => {
             <div className="hidden lg:flex items-center space-x-1">
               {[
                 { name: "Home", icon: null, path: "/" },
-                { name: "Products", icon: <Shirt size={16} />, path: "/products" },
-                { name: "Trending", icon: <Trophy size={16} />, path: "/trending" },
+                { name: "Products", path: "/products" },
+          
                 { name: "Contact", icon: null, path: "/contact" },
                 { name: "About", icon: null, path: "/about" }
               ].map((item) => (
@@ -327,11 +325,11 @@ const Navbar = () => {
           >
             <div className="px-8 py-4 space-y-2">
               {[
-                { name: "Home", icon: null, path: "/" },
-                { name: "Products", icon: <Shirt size={16} />, path: "/products" },
-                { name: "Trending", icon: <Trophy size={16} />, path: "/trending" },
-                { name: "Contact", icon: null, path: "/contact" },
-                { name: "About", icon: null, path: "/about" }
+                { name: "Home", path: "/" },
+                { name: "Products",  path: "/products" },
+                { name: "Trending", path: "/trending" },
+                { name: "Contact",  path: "/contact" },
+                { name: "About",  path: "/about" }
               ].map((item) => (
                 <button
                   key={item.name}
@@ -346,7 +344,7 @@ const Navbar = () => {
               <hr className="border-gray-700/50 my-3" />
               
               <button
-                onClick={() => handleNavigate("/profile")}
+                onClick={() => handleNavigate("/profile")}  
                 className="flex items-center w-full text-left py-3 px-4 text-gray-300 hover:text-white hover:bg-gray-800/50 font-medium transition-all duration-200 rounded-full"
               >
                 <User size={16} className="mr-3" />

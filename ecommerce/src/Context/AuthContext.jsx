@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5008/users?email=${loginEmail.trim()}&password=${loginPassword.trim()}`
+        `http://localhost:5010/users?email=${loginEmail.trim()}&password=${loginPassword.trim()}`
       );
 
       if (response.data.length > 0) {
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   // login admin
   const loginAdmin = (adminData) =>{
     setUser(adminData);
-    localStorage.setitem("User",JSON.stringify(adminData))
+    localStorage.setItem("User",JSON.stringify(adminData))
   }
 
   //  LOGOUT function

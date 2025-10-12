@@ -2,34 +2,36 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../Api/AxiosInstance";
 import { toast } from "react-toastify";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  // Cart state with localStorage
+  // Load from localStorage
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
-    return savedCart ? JSON.parse(savedCart) : [];
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : [];
   });
 
-  const [cartLength, setCartLength] = useState(cart.length);
+  const [cartLength, setCartLength] = useState(0);
 
-  // Keep cartLength and localStorage in sync
+  // 🧮 Keep cart length accurate and sync localStorage
   useEffect(() => {
-    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-    setCartLength(cart.length);
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartLength(totalItems);
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Load cart from API when user changes
+  // 🧾 Load cart from API when user logs in
   useEffect(() => {
     if (!user) {
       setCart([]);
+      localStorage.removeItem("cart");
       return;
-    } 
+    }
 
     const fetchCart = async () => {
       try {
@@ -43,80 +45,87 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, [user]);
 
-  const navigate= useNavigate()
-
-//  add to the cart page 
-
-
-const addToCart = async (product) => {
-  if(!user){
-    toast.error("Please log in to  add items to your cart!");
-    navigate("/login")
-    return 
-  }
-  setCart((prevCart) => {
-    const existing = prevCart.find((item) => item.id === product.id);
-
-    if (existing) {
-      toast.info("Already in cart!");
-      return prevCart; 
+  // 🔁 Helper to sync backend
+  const syncCartWithBackend = async (updatedCart) => {
+    if (!user) return;
+    try {
+      await api.patch(`/users/${user.id}`, { cart: updatedCart });
+     
+    } catch (err) {
+      console.error("Error syncing cart:", err);
+       toast.success("Successfully Increase The Product")
+     
     }
+  };
 
-    const updatedCart = [...prevCart, { ...product, quantity: 1 }];
-
-    if (user) {
-      api.patch(`/users/${user.id}`, { cart: updatedCart }).catch(console.error);
-    }
-
-    toast.success("Added to cart!");
-    return updatedCart;
-  });
-};
-
-  // updatting Quantitty
-
-  const updateQuantity = async (id, change) => {
+  // ➕ Add to cart
+  const addToCart = (product, quantity = 1) => {
     setCart((prevCart) => {
-      const updatedCart = prevCart
+      const existing = prevCart.find((item) => item.id === product.id);
+      let updatedCart;
+
+      if (existing) {
+        updatedCart = prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        updatedCart = [...prevCart, { ...product, quantity }];
+      }
+
+      syncCartWithBackend(updatedCart);
+      toast.success(`${product.name} added to cart`);
+      return updatedCart;
+    });
+  };
+
+  // 🔄 Update quantity
+  const updateQuantity = (id, change) => {
+    setCart((prevCart) => {
+      const updated = prevCart
         .map((item) =>
           item.id === id ? { ...item, quantity: item.quantity + change } : item
         )
         .filter((item) => item.quantity > 0);
 
-      if (user) {
-        api.patch(`/users/${user.id}`, { cart: updatedCart }).catch(console.error);
-      }
-
-      return updatedCart;
+      syncCartWithBackend(updated);
+      return updated;
     });
   };
 
-  // removing fromm the cart
-
-  const removeFromCart = async (id) => {
+  // ❌ Remove from cart
+  const removeFromCart = (id) => {
     setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== id);
-      if (user) {
-        api.patch(`/users/${user.id}`, { cart: updatedCart }).catch(console.error);
-      }
-      return updatedCart;
+      const updated = prevCart.filter((item) => item.id !== id);
+      syncCartWithBackend(updated);
+      toast.info("Item removed from cart");
+      return updated;
     });
-    
   };
 
-  // clering from the cartt
-
-  const clearCart = async () => {
+  // 🧹 Clear entire cart
+  const clearCart = () => {
     setCart([]);
-    if (user) {
-      api.patch(`/users/${user.id}`, { cart: [] }).catch(console.error);
-    }
-    toast.info("Cart is Empty...")
+    localStorage.removeItem("cart");
+    syncCartWithBackend([]);
+    toast.info("Cart is empty now");
   };
+
+   
 
   return (
     <CartContext.Provider
-      value={{  cart,  addToCart,  updateQuantity,  removeFromCart,  clearCart,  cartLength,}}>
+      value={{
+        cart,
+        cartLength,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+      
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

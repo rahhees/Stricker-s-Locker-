@@ -41,7 +41,7 @@ const LoginAdmin = () => {
       localStorage.setItem("role", JSON.stringify(adminUser));
     
       toast.success("Logged in as admin.");
-      navigate("/admin/dashboard");
+      navigate("/admin/dashboard"); 
 
     } else {
       toast.error("Invalid admin credentials.");

@@ -78,7 +78,7 @@ export const WishlistProvider = ({ children }) => {
         await api.patch(`/users/${user.id}`, { wishlist: updatedWishlist });
       } catch (err) {
         console.error("Error syncing wishlist:", err);
-        toast.error("Failed To Update Wishlist")
+        // toast.error("Failed To Update Wishlist")
       }
      
     }

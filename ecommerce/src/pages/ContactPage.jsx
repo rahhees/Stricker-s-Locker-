@@ -139,15 +139,12 @@ function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50 ">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-900 via-red-900 to-gray-900">
+    <div className=" bg-gradient-to-br from-gray-900 to-gray-800 pt-20 pb-10 px-4 ">
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 ">
           <div className="text-center">
             <div className="flex items-center justify-center mb-6">
-              <div className="bg-red-600 text-white p-3 rounded-full mr-4 mt-12">
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7v10c0 5.55 3.84 9.739 9 11 5.16-1.261 9-5.45 9-11V7l-10-5z"/>
-                </svg>
-              </div>
+             
               <h1 className="text-4xl md:text-6xl font-bold text-white mt-12">
                 Wolf <span className="text-red-400">Athletix</span>
               </h1>
@@ -171,7 +168,7 @@ function ContactPage() {
       </div>
 
       {/* Contact Methods */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-15">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
           {contactMethods.map((method, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100">

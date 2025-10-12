@@ -6,7 +6,7 @@ import { AuthProvider } from './Context/AuthContext';
 import { CartProvider } from './Context/CartContext';
 import { WishlistProvider } from './Context/WishlistContext';
 import Cart from './pages/CartPage';
-import Trending from './Component/Trending';
+// import Trending from './Component/Trending';
 import WhislistPage from './pages/WhislistPage';
 import ProtectedRoute from './Component/Routes/ProtectedRoute';
 import { SearchProvider } from './Context/SearchContext';
@@ -28,8 +28,10 @@ import NewProduct from './Component/Admin/NewProduct';
 import AboutPage from './pages/AboutPage';
 import ViewUsers from './Component/Admin/ViewUsers';
 import AdminDashboard from './Component/Admin/AdminDashboard';
-import footballAnimation from './animation/Football Animation with the Path.json'
-import Lottie from 'lottie-react';
+import footballAnimation from './animation/FootballAnimation.json'
+import Lottie from 'lottie-react'
+import '../src/App.css'
+
 
 // Football-themed loading component
 
@@ -39,12 +41,31 @@ const Product = lazy(() => import("./pages/Product"));
 
 
 
+const Animation = () => {
+  return (
+    <Lottie
+      animationData={footballAnimation}
+      loop={true}
+      style={{ width: 200, height: 200, margin: 'auto', marginTop: '20%' }}
+    />
+  );
+};
 
   
 
 function App() {
   const location = useLocation();
 
+
+  
+  const [showLoader, setShowLoader] = useState(true);
+
+  useEffect(() => {
+   
+    const timer = setTimeout(() => setShowLoader(false), 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
   const hideNavbarPaths = [
     '/login',
     '/admin/login',
@@ -56,6 +77,10 @@ function App() {
     '/404'
   ];
 
+  if (showLoader) {
+    // Always show football animation for X seconds
+    return <Animation />;
+  }
 
   
   return (
@@ -97,7 +122,7 @@ function App() {
                     {/* User protected routes */}
                     <Route element={<ProtectedRoute />}>
                       <Route path='/cartpage' element={<Cart />} />
-                      <Route path='/trending' element={<Trending />} />
+                      {/* <Route path='/trending' element={<Trending />} /> */}
                       <Route path='/wishlist' element={<WhislistPage />} />
                       <Route path='/shipping' element={<ShippingPage />} />
                       <Route path='/profile' element={<ProfilePage />} />
@@ -121,21 +146,5 @@ function App() {
   );
 }
 
-const Animation = () => {
-  const [start, setStart] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setStart(true), 2000); // start after 2s
-    return () => clearTimeout(timer);
-  }, []);
-
-  return start ? (
-    <Lottie
-      animationData={footballAnimation}
-      loop={true}
-      style={{ width: 200, height: 200, margin: 'auto', marginTop: '20%' }}
-    />
-  ) : null;
-};
 
 export default App;

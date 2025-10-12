@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../Component/Navbar';
-import Footer from '../Component/Footer';
+import Footer from '../Component/Footer'
 import Banner from '../Component/Banner';
-import Trending from '../Component/Trending';
 import { CartContext } from '../Context/CartContext';
 import { WishlistContext } from '../Context/WishlistContext';
 import api from '../Api/AxiosInstance';
@@ -15,9 +14,8 @@ function Home() {
   const { wishlist, addToWishlist } = useContext(WishlistContext);
 
   const [products, setProducts] = useState([]);
+ 
 
-
-console.log("in home page");
 
 
 
@@ -28,7 +26,7 @@ console.log("in home page");
         setProducts(res.data);
       } catch (err) {
         console.error(err);
-      }
+      } 
     };
     fetchProducts();
   }, []);
@@ -39,7 +37,7 @@ console.log("in home page");
     <div>
       <Navbar />
       <Banner />
-      <Trending   products={products}    onAddToCart={addToCart}    onAddToWishlist={addToWishlist}    isInWishlist={isInWishlist}   />
+     
       <Footer />
     </div>
   );

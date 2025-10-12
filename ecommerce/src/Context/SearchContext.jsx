@@ -10,6 +10,8 @@ export const SearchProvider = ({ children }) => {
 
   const applySearch = () => setAppliedSearch(searchTerm);
 
+  
+
   return (
     <SearchContext.Provider
       value={{ searchTerm, setSearchTerm, appliedSearch, setAppliedSearch ,applySearch}}>
@@ -17,3 +19,5 @@ export const SearchProvider = ({ children }) => {
     </SearchContext.Provider>
   );
 };
+
+

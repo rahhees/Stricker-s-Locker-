@@ -5,6 +5,7 @@ import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import loginImage from '../assets/Images/login_im.jpg'
 import { toast } from "react-toastify";
+import Product from "./Product";
 
 // REGISTRATION
 
@@ -36,7 +37,9 @@ const initialState = {
   role:"user",
   cart:[],
   wishlist:[],
-  order:[],
+  order:[
+    {}
+  ],
   shippingaddress:{},
 
 };
