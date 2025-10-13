@@ -11,10 +11,10 @@ function ProductCard({
   isInWishlist,
   viewMode = "grid",
 }) {
-  const { setCartLength } = useContext(CartContext);
+  const { cart, setCartLength } = useContext(CartContext);
   const navigate = useNavigate();
 
-  // Default actions (in case props aren’t passed)
+  // Default actions if not passed via props
   const defaultOnAction = (p) => {
     console.log(`Action on: ${p.name}`);
     setCartLength((prev) => prev + 1);
@@ -24,6 +24,9 @@ function ProductCard({
   const actualOnAddToCart = onAddToCart || defaultOnAction;
   const actualOnAddToWishlist = onAddToWishlist || defaultOnAction;
   const actualIsInWishlist = isInWishlist || defaultIsInWishlist;
+
+  // Check if product is already in cart
+  const isInCart = cart.some((item) => item.id === product.id);
 
   return (
     <div
@@ -82,7 +85,7 @@ function ProductCard({
           viewMode === "list" ? "flex-1" : "px-2"
         }`}
       >
-        {/* ✅ Jersey Name Below Image */}
+        {/* Product Name */}
         <h3
           className="font-semibold text-gray-900 text-center mt-2 mb-1 text-sm uppercase tracking-wide cursor-pointer hover:text-blue-700 transition-colors line-clamp-2"
           onClick={() => navigate(`/products/${product.id}`)}
@@ -90,7 +93,7 @@ function ProductCard({
           {product.name}
         </h3>
 
-        {/* Optional player or team */}
+        {/* Optional Player or Team */}
         {product.player && (
           <span className="text-xs text-gray-500 mb-1">{product.player}</span>
         )}
@@ -114,17 +117,25 @@ function ProductCard({
           )}
         </div>
 
-        {/* ✅ Add to Cart Button — fully working */}
+        {/* Add to Cart / Go to Cart Button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
-            actualOnAddToCart(product);
+            if (isInCart) {
+              navigate("/cartpage");
+            } else {
+              actualOnAddToCart(product);
+            }
           }}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]"
           disabled={product.stock === 0}
         >
           <ShoppingCart size={16} />
-          {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
+          {product.stock === 0
+            ? "Out of Stock"
+            : isInCart
+            ? "Go to Cart" 
+            : "Add to Cart"}
         </button>
       </div>
     </div>

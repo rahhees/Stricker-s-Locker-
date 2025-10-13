@@ -62,7 +62,7 @@ function Product() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="bg-white border text-black border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option>All</option>
               <option>Featured</option>
@@ -72,19 +72,6 @@ function Product() {
               <option>Top Rated</option>
             </select>
 
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option>All</option>
-              <option>Balls</option>
-              <option>Jersey</option>
-              <option>Shorts</option>
-              <option>Socks</option>
-              <option>Gloves</option>
-              <option>Accessories</option>
-            </select>
           </div>
 
           {/* Grid view indicator */}

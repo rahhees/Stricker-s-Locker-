@@ -427,6 +427,26 @@
           "createdAt": "2024-06-10T11:20:00.000Z",
           "hoverImage": "../src/assets/Images/neymar1.jpg",
           "quantity": 1
+        },
+        {
+          "id": "25",
+          "name": "Barcelona Iconic Jersey",
+          "price": 350,
+          "originalPrice": 450,
+          "rating": 4.5,
+          "image": "https://fanatics.frgimages.com/barcelona/patrick-kluivert-barcelona-autographed-2024-25-red/blue-home-nike-jersey-bas_ss5_p-202564985+pv-3+u-hic6hnhhsljj4cdcorx6+v-sge0xthxrzygeagutsru.jpg?_hv=2&w=900",
+          "hoverImage": "https://fanatics.frgimages.com/barcelona/patrick-kluivert-barcelona-autographed-2024-25-red/blue-home-nike-jersey-bas_ss5_p-202564985+pv-2+u-hic6hnhhsljj4cdcorx6+v-zhrsj3qsevwfjocoufbx.jpg?_hv=2&w=900",
+          "images": [
+            "https://fanatics.frgimages.com/barcelona/patrick-kluivert-barcelona-autographed-2024-25-red/blue-home-nike-jersey-bas_ss5_p-202564985+pv-3+u-hic6hnhhsljj4cdcorx6+v-sge0xthxrzygeagutsru.jpg?_hv=2&w=900",
+            "https://fanatics.frgimages.com/barcelona/patrick-kluivert-barcelona-autographed-2024-25-red/blue-home-nike-jersey-bas_ss5_p-202564985+pv-2+u-hic6hnhhsljj4cdcorx6+v-zhrsj3qsevwfjocoufbx.jpg?_hv=2&w=900",
+            "https://fanatics.frgimages.com/barcelona/patrick-kluivert-barcelona-autographed-2024-25-red/blue-home-nike-jersey-bas_ss5_p-202564985+pv-1+u-hic6hnhhsljj4cdcorx6+v-fxqccykv2clwnckgh2tv.jpg?_hv=2&w=900",
+            "https://fanatics.frgimages.com/barcelona/patrick-kluivert-barcelona-autographed-2024-25-red/blue-home-nike-jersey-bas_ss5_p-202564985+pv-4+u-hic6hnhhsljj4cdcorx6+v-0b1k0jblziwkrvk0qblr.jpg?_hv=2&w=900"
+          ],
+          "offer": "22% OFF",
+          "category": "Jersey",
+          "featured": "false",
+          "createdAt": "2024-07-09T12:00:00.000Z",
+          "quantity": 18
         }
       ],
       "wishlist": [
