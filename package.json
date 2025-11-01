@@ -1,0 +1,24 @@
+{
+  "name": "your-project-name",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "framer-motion": "^12.23.13",
+    "lottie-react": "^2.4.1",
+    "lucide-react": "^0.542.0",
+    "react-router-dom": "^7.8.2",
+    "react-spinners": "^0.17.0",
+    "react-toastify": "^11.0.5",
+    "recharts": "^3.2.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
