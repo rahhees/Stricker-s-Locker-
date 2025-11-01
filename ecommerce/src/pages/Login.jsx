@@ -1,4 +1,4 @@
-// AuthPage.jsx - Clean and Simple Modern Design
+// AuthPage.jsx - Fully Responsive Modern Design
 import React, { useReducer, useState, useContext } from "react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import api from "../Api/AxiosInstance";
@@ -6,7 +6,7 @@ import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// REGISTRATION REDUCER
+// Reducer for registration
 const registrationReducer = (state, action) => {
   switch (action.type) {
     case "SET_FIRST_NAME":
@@ -26,7 +26,7 @@ const registrationReducer = (state, action) => {
   }
 };
 
-// INITIAL STATE
+// Initial registration state
 const initialState = {
   firstName: "",
   lastName: "",
@@ -40,15 +40,12 @@ const initialState = {
   shippingaddress: {},
 };
 
-
-
 function AuthPage() {
   const [activeTab, setActiveTab] = useState("signup");
   const [regState, regDispatch] = useReducer(registrationReducer, initialState);
   const [regError, setRegError] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-
   const { loginuser, loginError } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -88,54 +85,40 @@ function AuthPage() {
   };
 
   // Handle Login
- // In your login component, after successful login
-const handleLogin = async (e) => {
-  e.preventDefault();
-  const result = await loginuser(loginEmail, loginPassword);
-  if (result.success) {
-    toast.success(`Welcome back, ${result.user.firstName}!`);
-    
-    // Redirect to intended page or home
-    if (result.redirectTo) {
-      navigate(result.redirectTo);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const result = await loginuser(loginEmail, loginPassword);
+    if (result.success) {
+      toast.success(`Welcome back, ${result.user.firstName}!`);
+      navigate(result.redirectTo || "/");
     } else {
-      navigate("/");
+      toast.error("Login Failed. Please check your credentials.");
     }
-  } else {
-    toast.error("Login Failed. Please check your credentials.");
-  }
-  setIsLoading(false);
-};
+  };
 
   return (
-    // ✅ Main container: Full screen height, subtle background
-  <div className="flex h-screen bg-gray-50 overflow-hidden">
-  {/* Image/Marketing Section */}
-{/* Left Side Image Section */}
-<div className="w-full lg:w-1/2 relative">
-  <img
-    src="https://i.pinimg.com/1200x/cd/54/54/cd5454f908667f54e2198aec9e3891a4.jpg"
-    alt="Athletics background"
-    className="w-full h-full object-cover"
-  />
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 overflow-hidden">
+      {/* Left Side Image Section (Hidden on small devices) */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <img
+          src="https://i.pinimg.com/1200x/cd/54/54/cd5454f908667f54e2198aec9e3891a4.jpg"
+          alt="Athletics background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 lg:p-16">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+            Train Hard. <span className="text-red-500">Live Better</span>.
+          </h1>
+          <p className="text-gray-300 text-base md:text-lg max-w-md">
+            Access premium gear, workout plans, and a global fitness community.
+          </p>
+        </div>
+      </div>
 
-  {/* Optional overlay text */}
-  <div className="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 lg:p-16">
-    <h1 className="text-4xl font-extrabold text-white leading-tight mb-4">
-      Train Hard. <span className="text-red-500">Live Better</span>.
-    </h1>
-    <p className="text-gray-300 text-lg">
-      Access premium gear, workout plans, and a global fitness community.
-    </p>
-  </div>
-</div>
-
-
-
-      {/* Authentication Form Section */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 overflow-y-auto">
-        <div className="bg-white p-8 sm:p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
-          <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">
+      {/* Authentication Section */}
+      <div className="flex flex-1 flex-col justify-center items-center px-6 sm:px-8 md:px-10 py-10 overflow-y-auto">
+        <div className="bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md md:max-w-lg border border-gray-100 mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 text-center mb-8">
             {activeTab === "signin" ? "Sign In to Your Account" : "Join the Community"}
           </h2>
 
@@ -143,7 +126,7 @@ const handleLogin = async (e) => {
           <div className="flex mb-8 bg-gray-100 p-1 rounded-full shadow-inner">
             <button
               onClick={() => setActiveTab("signin")}
-              className={`flex-1 py-2.5 rounded-full font-semibold transition-all duration-300 ${
+              className={`flex-1 py-2 sm:py-2.5 rounded-full font-semibold transition-all duration-300 ${
                 activeTab === "signin"
                   ? "bg-red-600 text-white shadow-md"
                   : "text-gray-700 hover:bg-gray-200"
@@ -153,7 +136,7 @@ const handleLogin = async (e) => {
             </button>
             <button
               onClick={() => setActiveTab("signup")}
-              className={`flex-1 py-2.5 rounded-full font-semibold transition-all duration-300 ${
+              className={`flex-1 py-2 sm:py-2.5 rounded-full font-semibold transition-all duration-300 ${
                 activeTab === "signup"
                   ? "bg-red-600 text-white shadow-md"
                   : "text-gray-700 hover:bg-gray-200"
@@ -177,7 +160,7 @@ const handleLogin = async (e) => {
                   placeholder="Email Address"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg text-black px-4 py-3 focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
+                  className="w-full border border-gray-300 rounded-lg text-black px-3 py-2 sm:px-4 sm:py-3 focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
                   required
                 />
                 <input
@@ -185,7 +168,7 @@ const handleLogin = async (e) => {
                   placeholder="Password"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 text-black py-3 focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
                   required
                 />
                 <button
@@ -202,12 +185,12 @@ const handleLogin = async (e) => {
           {activeTab === "signup" && (
             <>
               {regError && (
-                <div className="text-red-600 text-sm mb-4 text-center p-2  bg-red-50 rounded-lg border border-red-200">
+                <div className="text-red-600 text-sm mb-4 text-center p-2 bg-red-50 rounded-lg border border-red-200">
                   {regError}
                 </div>
               )}
               <form onSubmit={handleRegistration} className="space-y-4">
-                <div className="flex space-x-3">
+                <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
                   <input
                     type="text"
                     placeholder="First Name"
@@ -215,7 +198,7 @@ const handleLogin = async (e) => {
                     onChange={(e) =>
                       regDispatch({ type: "SET_FIRST_NAME", payload: e.target.value })
                     }
-                    className="w-1/2 border border-gray-300 rounded-lg px-4 py-3 text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
+                    className="w-full sm:w-1/2 border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
                     required
                   />
                   <input
@@ -225,7 +208,7 @@ const handleLogin = async (e) => {
                     onChange={(e) =>
                       regDispatch({ type: "SET_LAST_NAME", payload: e.target.value })
                     }
-                    className="w-1/2 border border-gray-300 rounded-lg px-4 py-3  text-black  focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
+                    className="w-full sm:w-1/2 border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
                     required
                   />
                 </div>
@@ -237,7 +220,7 @@ const handleLogin = async (e) => {
                   onChange={(e) =>
                     regDispatch({ type: "SET_EMAIL", payload: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3  text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
                   required
                 />
                 <input
@@ -247,7 +230,7 @@ const handleLogin = async (e) => {
                   onChange={(e) =>
                     regDispatch({ type: "SET_PASSWORD", payload: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3  text-black  focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
                   required
                 />
                 <input
@@ -257,7 +240,7 @@ const handleLogin = async (e) => {
                   onChange={(e) =>
                     regDispatch({ type: "CONFIRM_PASSWORD", payload: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3  text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-black focus:ring-red-500 focus:border-red-500 transition duration-150 placeholder-gray-500"
                   required
                 />
 
@@ -270,8 +253,6 @@ const handleLogin = async (e) => {
               </form>
             </>
           )}
-
-         
         </div>
       </div>
     </div>
