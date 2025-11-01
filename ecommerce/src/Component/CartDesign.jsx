@@ -31,19 +31,17 @@ function ProductCard({
   return (
     <div
       className={`bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 group
-        ${
-          viewMode === "list"
-            ? "flex items-center gap-6 p-4"
-            : "hover:shadow-xl hover:-translate-y-1 border border-gray-100"
+        ${viewMode === "list"
+          ? "flex items-center gap-6 p-4"
+          : "hover:shadow-xl hover:-translate-y-1 border border-gray-100"
         }`}
     >
       {/* Image Section */}
       <div
-        className={`relative cursor-pointer overflow-hidden ${
-          viewMode === "grid"
-            ? "aspect-[3/4] w-full"
-            : "h-40 w-40 flex-shrink-0 rounded-lg"
-        } bg-gray-50 transition-all duration-300`}
+        className={`relative cursor-pointer overflow-hidden ${viewMode === "grid"
+          ? "aspect-[3/4] w-full "
+          : "h-40 w-40 flex-shrink-0 rounded-lg"
+          } bg-gray-50 transition-all duration-300`}
         onClick={() => navigate(`/products/${product.id}`)}
       >
         <img
@@ -59,10 +57,9 @@ function ProductCard({
             actualOnAddToWishlist(product);
           }}
           className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-300 z-10
-            ${
-              actualIsInWishlist(product.id)
-                ? "bg-red-500 text-white shadow-md"
-                : "bg-white/80 hover:bg-white text-gray-700 hover:text-red-500 shadow-sm"
+            ${actualIsInWishlist(product.id)
+              ? "bg-red-500 text-white shadow-md"
+              : "bg-white/80 hover:bg-white text-gray-700 hover:text-red-500 shadow-sm"
             } hover:scale-110`}
         >
           <Heart
@@ -81,9 +78,8 @@ function ProductCard({
 
       {/* Details Section */}
       <div
-        className={`pt-2 pb-4 flex flex-col items-center ${
-          viewMode === "list" ? "flex-1" : "px-2"
-        }`}
+        className={`pt-2 pb-4 flex flex-col items-center ${viewMode === "list" ? "flex-1" : "px-2"
+          }`}
       >
         {/* Product Name */}
         <h3
@@ -127,16 +123,26 @@ function ProductCard({
               actualOnAddToCart(product);
             }
           }}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]"
+          className={`
+    w-full text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 
+    text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg 
+    disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]
+
+    ${product.stock === 0
+              ? "bg-gray-400 cursor-not-allowed"
+              : isInCart
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-blue-600 hover:bg-blue-700"}  `}
           disabled={product.stock === 0}
         >
           <ShoppingCart size={16} />
           {product.stock === 0
             ? "Out of Stock"
             : isInCart
-            ? "Go to Cart" 
-            : "Add to Cart"}
+              ? "Go to Cart"
+              : "Add to Cart"}
         </button>
+
       </div>
     </div>
   );

@@ -2,8 +2,8 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 
-const ProtectedRoute = ({ roles }) => {
-  const { user, loading } = useContext(AuthContext); // assume you track loading state
+const ProtectedRoute = ({ roles, requireAuth = true }) => {
+  const { user, loading } = useContext(AuthContext);
   const location = useLocation();
 
   const role = user?.role || localStorage.getItem("role");
@@ -13,19 +13,22 @@ const ProtectedRoute = ({ roles }) => {
   console.log("User from context:", user);
   console.log("Role:", role);
   console.log("Allowed roles prop:", roles);
+  console.log("Require Auth:", requireAuth);
 
-  // If user data is still loading, show fallback (e.g., Home)
+  // If user data is still loading, show loading
   if (loading) {
-    return <div>Loading...</div>; // or <Home /> component
+    return <div className="flex justify-center items-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+    </div>;
   }
 
-  // User is not logged in
-  if (!user) {
-    if (location.pathname.startsWith("/admin")) {
-      return <Navigate to="/admin/login" replace state={{ from: location }} />;
-    } else {
-      return <Navigate to="/login" replace state={{ from: location }} />;
-    }
+  // If authentication is required but user is not logged in
+  if (requireAuth && !user) {
+    // Store the intended destination
+    const from = location.pathname + location.search;
+    localStorage.setItem('redirectAfterLogin', from);
+    
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   // User is logged in but roles are restricted

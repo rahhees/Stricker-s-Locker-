@@ -55,6 +55,7 @@ function ProductDetails() {
       try {
         const res = await api.get(`/products/${id}`);
         setProduct(res.data);
+        console.log("Product api response",res.data)
 
         const allRes = await api.get("/products");
         const related = allRes.data.filter(
@@ -97,11 +98,12 @@ function ProductDetails() {
     );
   }
 
-  const productImages = product.images
-    ? Array.isArray(product.images)
-      ? product.images
-      : [product.images]
-    : [product.image || "https://via.placeholder.com/600x600"];
+ const productImages = product.images
+  ? Array.isArray(product.images)
+    ? product.images
+    : [product.images]
+  : [product.image || "https://via.placeholder.com/600x600"];
+
 
   return (
     <div className="w-full bg-gradient-to-br from-gray-900 to-gray-800 pb-10 px-4 text-white">
@@ -248,7 +250,7 @@ function ProductDetails() {
             {/* 🛒 Action Buttons */}
             <div className="space-y-3">
               <button
-                onClick={() => addToCart(product, quantity)}
+                onClick={() => addToCart(product)}
                 className="w-full bg-black text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-3 hover:bg-gray-800 transform hover:scale-105 transition-all duration-200 shadow-lg"
               >
                 <ShoppingCart size={24} />
@@ -327,6 +329,7 @@ function ProductDetails() {
                   id="relatedScroll"
                   className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide"
                 >
+                  
                   {relatedProducts.map((item) => (
                     <div key={item.id} className="flex-shrink-0 w-60 lg:w-[22%]"> {/* Using w-60 as a fixed size for better mobile scrolling */}
                       <ProductCard
@@ -335,6 +338,7 @@ function ProductDetails() {
                         onAddToWishlist={addToWishlist}
                         isInWishlist={isInWishlist}
                         viewMode="grid"
+                      
                         // Ensure navigation works on the new card wrapper
                         onClick={() => navigate(`/products/${item.id}`)}
                       />

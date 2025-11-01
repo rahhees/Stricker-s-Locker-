@@ -18,14 +18,14 @@ export const CartProvider = ({ children }) => {
 
   const [cartLength, setCartLength] = useState(0);
 
-  // 🧮 Keep cart length accurate and sync localStorage
+  // Keep cart length accurate and sync localStorage
   useEffect(() => {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     setCartLength(totalItems);
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // 🧾 Load cart from API when user logs in
+  // Load cart from API when user logs in
   useEffect(() => {
     if (!user) {
       setCart([]);
@@ -45,42 +45,34 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, [user]);
 
-  // 🔁 Helper to sync backend
+  // Helper to sync backend
   const syncCartWithBackend = async (updatedCart) => {
     if (!user) return;
     try {
       await api.patch(`/users/${user.id}`, { cart: updatedCart });
-     
     } catch (err) {
       console.error("Error syncing cart:", err);
-       toast.success("Successfully Increase The Product")
-     
     }
   };
 
-  // ➕ Add to cart
+  // Add to cart (prevent duplicate)
   const addToCart = (product, quantity = 1) => {
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === product.id);
-      let updatedCart;
 
       if (existing) {
-        updatedCart = prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        updatedCart = [...prevCart, { ...product, quantity }];
+        toast.info(`${product.name} is already in the cart`);
+        return prevCart; // Don't increase quantity
       }
 
+      const updatedCart = [...prevCart, { ...product, quantity }];
       syncCartWithBackend(updatedCart);
       toast.success(`${product.name} added to cart`);
       return updatedCart;
     });
   };
 
-  // 🔄 Update quantity
+  // Update quantity
   const updateQuantity = (id, change) => {
     setCart((prevCart) => {
       const updated = prevCart
@@ -94,7 +86,7 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // ❌ Remove from cart
+  // Remove from cart
   const removeFromCart = (id) => {
     setCart((prevCart) => {
       const updated = prevCart.filter((item) => item.id !== id);
@@ -104,15 +96,13 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // 🧹 Clear entire cart
+  // Clear entire cart
   const clearCart = () => {
     setCart([]);
     localStorage.removeItem("cart");
     syncCartWithBackend([]);
     toast.info("Cart is empty now");
   };
-
-   
 
   return (
     <CartContext.Provider
@@ -123,7 +113,6 @@ export const CartProvider = ({ children }) => {
         updateQuantity,
         removeFromCart,
         clearCart,
-      
       }}
     >
       {children}

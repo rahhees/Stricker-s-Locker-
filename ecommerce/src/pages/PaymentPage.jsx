@@ -5,168 +5,289 @@ import { AuthContext } from "../Context/AuthContext";
 import { CartContext } from "../Context/CartContext";
 import { toast } from "react-toastify";
 
+// Assuming you have an Axios instance for API calls
+import api from "../Api/AxiosInstance"; 
+
 function PaymentPage() {
-  const { user } = useContext(AuthContext);
-  const { cart } = useContext(CartContext);
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const { cart, clearCart } = useContext(CartContext); // Assuming clearCart exists in CartContext
+  const navigate = useNavigate();
 
-  const shippingaddress = user?.shippingaddress || {};
+  const shippingaddress = user?.shippingaddress || {};
 
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const tax = subtotal * 0.08;
-  const total = subtotal + tax;
+  // State for selected payment method
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("razorpay");
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const [isProcessing, setIsProcessing] = useState(false);
+  // Ensure cart items have a quantity, default to 1 if missing for calculation safety
+  const safeCart = cart.map(item => ({ ...item, quantity: item.quantity || 1 }));
 
-  const handleBack = () => window.history.back();
+  const subtotal = safeCart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const tax = subtotal * 0.08;
+  const total = subtotal + tax;
 
-  const handleCompleteOrder = () => {
-    if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
+  const handleBack = () => window.history.back();
 
-    if (!window.Razorpay) {
-      alert("Razorpay SDK not loaded. Add script in index.html");
-      return;
-    }
+  // Helper function to save the order
+  const saveOrder = async (newOrder) => {
+    try {
+      // Use the imported API instance for the PATCH request
+      const previousOrders = user.order && Array.isArray(user.order) ? user.order : [];
+      const response = await api.patch(`/users/${user.id}`, { 
+        order: [...previousOrders, newOrder],
+        cart: [], // Clear the cart when order is placed
+      });
 
-    setIsProcessing(true);
+      // Update user context/local storage
+      const updatedUser = response.data;
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-    const options = {
-      key: "rzp_test_edrzdb8Gbx5U5M", // Razorpay demo key
-      amount: Math.round(total * 100), // amount in paise
-      currency: "INR",
-      name: "My Shop",
-      description: "Order Payment",
-      prefill: {
-        name: user?.name || "Guest",
-        email: user?.email || "guest@example.com",
-        contact: shippingaddress?.mobileno || "9876543210",
-      },
-      theme: { color: "#dc2626" },
-      handler: function (response) {
-        // Payment success
-        const newOrder = {
-          orderId: Date.now(),
-          paymentId: response.razorpay_payment_id,
-          amount: total,
-          date: new Date().toISOString(),
-          status: "SUCCESS",
-          shippingAddress: shippingaddress,
-          items: cart,
-          summary: { subtotal, tax, total },
-        };
+      // Clear the cart state via context
+      if (clearCart) clearCart();
 
-        const previousOrders = user.order && Array.isArray(user.order) ? user.order : [];
+      setIsProcessing(false);
+      navigate("/confirmation", { replace: true, state: { order: newOrder } });
+      toast.success("Order Placed Successfully!");
+    } catch (err) {
+      console.error("Error saving order:", err);
+      setIsProcessing(false);
+      toast.error("Order placed but failed to save in your profile!");
+    }
+  };
 
-        fetch(`http://localhost:5008/users/${user.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ order: [...previousOrders, newOrder] }),
-        })
-          .then(res => res.json())
-          .then(() => {
-            const updatedUser = { ...user, order: [...previousOrders, newOrder] };
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-            setIsProcessing(false);
-            navigate("/Confirmation", { replace: true, state: { order: newOrder } });
-            toast.success("Payment Succesully Completed")
-          })
-          .catch(err => {
-            console.error("Error saving order:", err);
-            setIsProcessing(false);
-            alert("Payment succeeded but failed to save order!");
-          });
-      },
-      modal: {
-        ondismiss: () => {
-          setIsProcessing(false);
-         toast.warn("Payment Failed!")
-        },
-      },
-    };
+  const handleCompleteOrder = () => {
+    if (safeCart.length === 0) {
+      toast.warn("Your cart is empty!");
+      return;
+    }
 
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-  };
+    setIsProcessing(true);
 
-  return (
-    <div className="min-h-screen bg-gray-100 py-10">
-      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    if (selectedPaymentMethod === "cod") {
+      const codOrder = {
+        orderId: Date.now(),
+        paymentMethod: "COD",
+        amount: total.toFixed(2),
+        date: new Date().toISOString(),
+        status: "Pending", // COD orders usually start as Pending
+        shippingAddress: shippingaddress,
+        items: safeCart,
+        summary: { subtotal: subtotal.toFixed(2), tax: tax.toFixed(2), total: total.toFixed(2) },
+      };
+      saveOrder(codOrder);
+      
+    } else if (selectedPaymentMethod === "razorpay") {
+      
+      if (!window.Razorpay) {
+        toast.error("Razorpay SDK not loaded.");
+        setIsProcessing(false);
+        return;
+      }
 
-        {/* Payment Section */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md border space-y-6 mt-15">
-          <h2 className="text-2xl font-semibold text-gray-800">Payment Method</h2>
-          <p className="text-gray-600">Click “Complete Order” to proceed with Razorpay payment.</p>
+      const options = {
+        key: "rzp_test_edrzdb8Gbx5U5M",
+        amount: Math.round(total * 100),
+        currency: "INR",
+        name: "My Shop",
+        description: "Order Payment",
+        prefill: {
+          name: user?.name || "Guest",
+          email: user?.email || "guest@example.com",
+          contact: shippingaddress?.mobileno || "9876543210",
+        },
+        theme: { color: "#dc2626" },
+        handler: function (response) {
+          const successOrder = {
+            orderId: Date.now(),
+            paymentMethod: "Razorpay",
+            paymentId: response.razorpay_payment_id,
+            amount: total.toFixed(2),
+            date: new Date().toISOString(),
+            status: "SUCCESS",
+            shippingAddress: shippingaddress,
+            items: safeCart,
+            summary: { subtotal: subtotal.toFixed(2), tax: tax.toFixed(2), total: total.toFixed(2) },
+          };
+          saveOrder(successOrder);
+        },
+        modal: {
+          ondismiss: () => {
+            setIsProcessing(false);
+            toast.warn("Payment window closed.");
+          },
+        },
+      };
 
-          {/* Back & Complete Order buttons */}
-          <div className="flex justify-between pt-4 border-t">
-            <button
-              onClick={handleBack}
-              className="text-gray-600 hover:text-gray-800 font-medium"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={handleCompleteOrder}
-              disabled={isProcessing}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700"
-            >
-              {isProcessing ? "Processing..." : "Complete Order"}
-            </button>
-          </div>
-        </div>
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    }
+  };
 
-        {/* Order Summary Section */}
-        <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg border shadow-md sticky top-8 max-h-[700px] overflow-y-auto space-y-4 mt-15">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
+  return (
+    <>
+      {/* CSS to hide scrollbar */}
+      <style>{`
+        .hide-scrollbar {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE and Edge */
+          overflow-y: hidden; /* Prevent default browser scrollbar */
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
+        }
+      `}</style>
 
-            {cart.length > 0 ? (
-              cart.map(item => (
-                <div key={item.id} className="flex items-center justify-between gap-3 mb-3">
-                  <img
-                    src={item.image || "https://via.placeholder.com/50"}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded-md"
-                  />
-                  <div className="flex-1 ml-3">
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-500">Qty: {item.quantity || 1}</p>
-                  </div>
-                  <p className="font-semibold text-gray-800">
-                    ₹{item.price * (item.quantity || 1)}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500">No items in your cart.</p>
-            )}
+      {/* Applied hide-scrollbar to the main container */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-10 px-4 pt-18 hide-scrollbar">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div className="border-t pt-4 space-y-2">
-              <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal}</span></div>
-              <div className="flex justify-between"><span>Shipping</span><span className="text-green-600 font-medium">FREE</span></div>
-              <div className="flex justify-between"><span>Tax</span><span>₹{tax}</span></div>
-              <div className="flex justify-between font-bold text-lg border-t pt-2"><span>Total</span><span>₹{total}</span></div>
-            </div>
+          {/* Step Indicator */}
+          <div className="flex justify-center mb-12">
+            <div className="flex items-center space-x-4 mt-10">
+              {[
+                { step: 1, label: "Cart", active: true },
+                { step: 2, label: "Shipping", active: true },
+                { step: 3, label: "Payment", active: true, current: true },
+                { step: 4, label: "Confirmation", active: false },
+              ].map((s, index) => (
+                <React.Fragment key={s.step}>
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                        s.active ? "bg-red-600 text-white" : "bg-gray-700 text-gray-400 border border-gray-600"
+                      } ${s.current ? "ring-2 ring-red-300" : ""}`}
+                    >
+                      {s.step}
+                  </div>
+                    <span className={`text-xs mt-1 ${s.active ? "text-red-600 font-semibold" : "text-gray-500"}`}>
+                      {s.label}
+                    </span>
+                  </div>
+                  {index < 3 && <div className="h-0.5 w-16 bg-gray-700 mt-3" />}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
 
-            {/* Shipping Address */}
-            {shippingaddress && Object.keys(shippingaddress).length > 0 && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
-                <h3 className="font-medium text-gray-700 mb-2">Shipping Address</h3>
-                <p className="font-semibold">{shippingaddress.firstname} {shippingaddress.lastname}</p>
-                <p>{shippingaddress.address} {shippingaddress.apartment}</p>
-                <p>{shippingaddress.city}, {shippingaddress.state} {shippingaddress.postalcode}</p>
-                <p>{shippingaddress.mobileno}</p>
-                <p>{shippingaddress.country}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            {/* Payment Section (White card) */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-xl space-y-6">
+              <h2 className="text-2xl font-bold text-gray-800">Payment Method</h2>
+              <p className="text-gray-600 border-b pb-4">Select your preferred payment method to complete the order.</p>
+
+              {/* Razorpay Option */}
+              <div className="border border-gray-200 p-4 rounded-lg bg-gray-50">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="razorpay"
+                    checked={selectedPaymentMethod === "razorpay"}
+                    onChange={() => setSelectedPaymentMethod("razorpay")}
+                    className="form-radio h-4 w-4 text-red-600 focus:ring-red-500"
+                  />
+                  <span className="text-lg font-medium text-gray-800">Pay Online (Razorpay)</span>
+                </label>
+              </div>
+
+              {/* Cash on Delivery (COD) Option */}
+              <div className="border border-gray-200 p-4 rounded-lg bg-gray-50">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={selectedPaymentMethod === "cod"}
+                    onChange={() => setSelectedPaymentMethod("cod")}
+                    className="form-radio h-4 w-4 text-red-600 focus:ring-red-500"
+                  />
+                  <span className="text-lg font-medium text-gray-800">Cash on Delivery (COD)</span>
+                </label>
+              </div>
+
+              {/* Back & Complete Order buttons */}
+              <div className="flex justify-between pt-6">
+                <button
+                  onClick={handleBack}
+                  className="text-gray-600 hover:text-red-600 font-medium transition duration-150 ease-in-out"
+                >
+                  ← Return to Shipping
+                </button>
+            <button
+  onClick={handleCompleteOrder}
+  disabled={isProcessing}
+  className={`px-8 py-3 rounded-lg font-semibold transition duration-150 ease-in-out ${
+    isProcessing ? "bg-gray-400 text-gray-200 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700"
+  }`}
+>
+  {isProcessing
+    ? "Processing..."
+    : selectedPaymentMethod === "cod"
+    ? "Place COD Order"
+    : `Complete Order (₹${total.toFixed(2)})`}
+
+</button>
+              </div>
+            </div>
+
+            {/* Order Summary Section (White card) */}
+            <div className="lg:col-span-1">
+              {/* Using max-h-[80vh] and overflow-y-auto to control the summary height */}
+              <div className="bg-white p-6 rounded-2xl shadow-xl sticky top-8 max-h-[80vh] overflow-y-auto space-y-4">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Order Summary</h2>
+
+                {/* Item List - Added a specific max-height and inner scrolling for item list */}
+                <div className="max-h-56 overflow-y-auto pr-2">
+                  {safeCart.length > 0 ? (
+                    safeCart.map(item => (
+                      <div key={item.id} className="flex items-center justify-between gap-3 mb-3 border-b border-gray-100 pb-2">
+                        <img
+                          src={item.image || "https://via.placeholder.com/50"}
+                          alt={item.name}
+                          className="w-12 h-12 object-cover rounded-md border border-gray-200"
+                        />
+                        <div className="flex-1 ml-3">
+                          <p className="font-medium text-sm text-gray-800 truncate">{item.name}</p>
+                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                        </div>
+                        <p className="font-semibold text-gray-800 text-sm">
+                          ₹{(item.price * item.quantity).toFixed(2)}
+                        </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">No items in your cart.</p>
+                )}
+                </div>
+
+
+                {/* Price Breakdown */}
+                <div className="border-t pt-4 space-y-2 text-sm text-gray-600">
+                  <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal.toFixed(2)}</span></div>
+                  <div className="flex justify-between"><span>Shipping</span><span className="text-green-600 font-medium">FREE</span></div>
+                  <div className="flex justify-between"><span>Tax (8%)</span><span>₹{tax.toFixed(2)}</span></div>
+                  <div className="flex justify-between font-bold text-xl border-t pt-4 text-gray-900"><span>Total</span><span>₹{total.toFixed(2)}</span></div>
+                </div>
+
+                {/* Shipping Address */}
+                {shippingaddress && Object.keys(shippingaddress).length > 0 && (
+                  <div className="mt-4 p-4 bg-gray-100 rounded-lg border border-gray-200">
+                    <h3 className="font-bold text-gray-800 mb-2 border-b pb-1">Ship To</h3>
+                    <p className=" text-sm text-black font-bold">{shippingaddress.firstname} {shippingaddress.lastname}</p>
+                    <p className="text-sm text-gray-700">{shippingaddress.address} {shippingaddress.apartment}</p>
+                    <p className="text-sm text-gray-700">{shippingaddress.city}, {shippingaddress.state} {shippingaddress.postalcode}</p>
+                    <p className="text-sm text-gray-700">{shippingaddress.country}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default PaymentPage;

@@ -20,7 +20,7 @@ export const OrderProvider = ({ children }) => {
 
   const saveShippingDetails = async (details) => {
     try {
-      const res = await fetch(`http://localhost:5008/users/${user.id}`, {
+      const res = await fetch(`http://localhost:5010/users/${user.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

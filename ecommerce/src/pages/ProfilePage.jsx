@@ -42,7 +42,7 @@ const ProfilePage = () => {
 
       try {
         setIsLoading(true);
-        const res = await api.get(`/users/${storedUser}`);
+        const res = await api.get(`/users/${storedUser.id}`);
         setUser(res.data);
         
         // Fetch user stats (mock data - replace with actual API calls)
@@ -187,7 +187,7 @@ const handlePasswordUpdate = async () => {
               <div className="text-center mb-6">
                 <div className="relative inline-block">
                   <img
-                    src={user.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"}
+                    src={user.image}
                     alt="Profile"
                     className="w-24 h-24 rounded-2xl border-4 border-green-500/50 object-cover shadow-lg mx-auto"
                   />
