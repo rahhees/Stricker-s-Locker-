@@ -37,6 +37,8 @@ export const CartProvider = ({ children }) => {
       try {
         const res = await api.get(`/users/${user.id}`);
         setCart(res.data.cart || []);
+
+        backendCart = backendCart.filter(item=>item.stock>0);
       } catch (err) {
         console.error("Error loading cart:", err);
       }
@@ -57,12 +59,18 @@ export const CartProvider = ({ children }) => {
 
   // Add to cart (prevent duplicate)
   const addToCart = (product, quantity = 1) => {
+
+    if(product.stock<1){
+      toast.error(`${product.name} is out of Stock`);
+      return;
+    }
+
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === product.id);
 
       if (existing) {
         toast.info(`${product.name} is already in the cart`);
-        return prevCart; // Don't increase quantity
+        return prevCart; 
       }
 
       const updatedCart = [...prevCart, { ...product, quantity }];
@@ -74,13 +82,20 @@ export const CartProvider = ({ children }) => {
 
   // Update quantity
   const updateQuantity = (id, change) => {
-    setCart((prevCart) => {
-      const updated = prevCart
-        .map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity + change } : item
-        )
-        .filter((item) => item.quantity > 0);
-
+     setCart((prevCart) => {
+    const updated = prevCart
+      .map((item) => {
+        if (item.id === id) {
+          // If stock not available → stop increase
+          if (change > 0 && item.quantity >= item.stock) {
+            toast.error("No more stock available");
+            return item;
+          }
+          return { ...item, quantity: item.quantity + change };
+        }
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
       syncCartWithBackend(updated);
       return updated;
     });

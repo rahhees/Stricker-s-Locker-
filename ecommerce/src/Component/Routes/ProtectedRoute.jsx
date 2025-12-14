@@ -6,7 +6,13 @@ const ProtectedRoute = ({ roles, requireAuth = true }) => {
   const { user, loading } = useContext(AuthContext);
   const location = useLocation();
 
-  const role = user?.role || localStorage.getItem("role");
+let role = user?.role;
+
+if (!role) {
+  const storedUser = localStorage.getItem("user");
+  role = storedUser ? JSON.parse(storedUser).role : null;
+}
+
 
   console.log("ProtectedRoute Debug:");
   console.log("Current path:", location.pathname);

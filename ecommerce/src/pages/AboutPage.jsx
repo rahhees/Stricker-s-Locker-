@@ -1,11 +1,11 @@
 import React from 'react';
-import { 
-  Trophy, 
-  Shield, 
-  Users, 
-  Target, 
-  Star, 
-  Award, 
+import {
+  Trophy,
+  Shield,
+  Users,
+  Target,
+  Star,
+  Award,
   Heart,
   CheckCircle,
   Zap,
@@ -76,13 +76,13 @@ const AboutPage = () => {
             <Award size={20} />
             <span className="text-sm font-semibold">Premium Lacrosse Equipment</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
             WOLF <span className="bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">ATHLETIX</span>
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Empowering athletes with <span className="text-green-400 font-semibold">elite performance gear</span> 
+            Empowering athletes with <span className="text-green-400 font-semibold">elite performance gear</span>
             and unparalleled innovation on the lacrosse field
           </p>
 
@@ -116,9 +116,9 @@ const AboutPage = () => {
               </h2>
             </div>
             <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-              At <span className="text-green-400 font-semibold">Wolf Athleticx</span>, we believe that the right equipment 
-              can make all the difference between good and great. Our mission is to empower lacrosse players of all levels 
-              with the <span className="text-white font-semibold">highest quality, most innovative gear</span> on the market. 
+              At <span className="text-green-400 font-semibold">Wolf Athleticx</span>, we believe that the right equipment
+              can make all the difference between good and great. Our mission is to empower lacrosse players of all levels
+              with the <span className="text-white font-semibold">highest quality, most innovative gear</span> on the market.
               We're not just selling equipment - we're providing tools for athletes to unleash their full potential.
             </p>
           </div>
@@ -159,9 +159,9 @@ const AboutPage = () => {
                 Premium Shopping Experience
               </h2>
             </div>
-            
+
             <p className="text-lg text-gray-300 mb-8">
-              Our platform is designed to provide a seamless and engaging shopping experience for our community. 
+              Our platform is designed to provide a seamless and engaging shopping experience for our community.
               We've built more than just a store - we've created a resource for dedicated athletes.
             </p>
 
@@ -234,7 +234,7 @@ const AboutPage = () => {
       <footer className="text-center px-4">
         <div className="max-w-4xl mx-auto border-t border-gray-700/50 pt-8">
           <p className="text-gray-400 text-lg italic">
-            Thank you for being a part of the <span className="text-green-400 font-semibold">Wolf Athleticx</span> family. 
+            Thank you for being a part of the <span className="text-green-400 font-semibold">Wolf Athleticx</span> family.
             Together, let's redefine the game.
           </p>
         </div>

@@ -47,6 +47,12 @@ const AdminProducts = () => {
   };
 
   const handleUpdate = async () => {
+
+      if(formData.stock<1 &&  <p className="text-red-600 font-semibold mb-2"></p>){
+        toast.error("Product is Out of Stock");
+        return ;
+      }
+
     try {
       const payload = {
         name: formData.name,
@@ -60,6 +66,7 @@ const AdminProducts = () => {
         originalPrice: formData.originalPrice,
         featured: formData.featured,
         createdAt: formData.createdAt,
+        stock:formData.stock,
       };
       await api.put(`/products/${editingProduct.id}`, payload, {
         headers: { "Content-Type": "application/json" },
@@ -75,7 +82,7 @@ const AdminProducts = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-3xl font-bold text-indigo-600 mb-6">Manage Products</h2>
+      <h2 className="text-3xl font-bold text-white mb-6">Manage Products</h2>
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         <table className="w-full border-collapse text-sm">
@@ -85,7 +92,9 @@ const AdminProducts = () => {
               <th className="p-3 font-semibold text-left">Image</th>
               <th className="p-3 font-semibold text-left">Price</th>
               <th className="p-3 font-semibold text-left">Category</th>
+              <th className="p-3 font-semibold text-left">Stock</th>
               <th className="p-3 font-semibold text-left">Actions</th>
+
             </tr>
           </thead>
           <tbody>
@@ -106,6 +115,8 @@ const AdminProducts = () => {
                   </td>
                   <td className="p-3 font-semibold text-green-600">${p.price}</td>
                   <td className="p-3 text-gray-700">{p.category}</td>
+                  <td className="p-3 font-semibold text-purple-600">{p.stock}</td>
+
                   <td className="p-3 space-x-2">
                     <button
                       onClick={() => handleEditClick(p)}
@@ -136,15 +147,15 @@ const AdminProducts = () => {
       {/* Edit Modal */}
       {editingProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-96">
-            <h3 className="text-xl font-bold mb-4">Edit Product</h3>
+          <div className="bg-white p-6 rounded-lg shadow-xl w-96 ">
+            <h3 className="text-xl font-bold mb-4 text-blue-800">Edit Product</h3>
 
             <input
               type="text"
               name="name"
               value={formData.name || ""}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md mb-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-2 border rounded-md mb-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
               placeholder="Name"
             />
 
@@ -152,7 +163,7 @@ const AdminProducts = () => {
               <img
                 src={typeof editingProduct.image === "string" ? editingProduct.image : URL.createObjectURL(editingProduct.image)}
                 alt="Preview"
-                className="w-32 h-32 object-cover rounded-md mb-2 border"
+                className="w-32 h-32 object-cover rounded-md mb-2 border text-black"
               />
             )}
 
@@ -160,15 +171,44 @@ const AdminProducts = () => {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full p-2 border rounded-md mb-2"
+              className="w-full p-2 border rounded-md mb-2 text-black"
             />
+
+            <input type="number" name="stock" value={formData.stock || 0} 
+            onChange={handleChange} className="w-full p-2 border rounded-md mb-2 text-black" 
+            placeholder="Stock Quantity"/>
+
+
+
+            <div className="flex items-center gap-3 mb-2">
+  <button
+    type="button"
+    onClick={() => setFormData({ ...formData, stock: (formData.stock || 0) - 1 })}
+    className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md"
+  >
+    -
+  </button>
+
+  <span className="font-semibold text-black">
+    {formData.stock || 0}
+  </span>
+
+  <button
+    type="button"
+    onClick={() => setFormData({ ...formData, stock: (formData.stock || 0) + 1 })}
+    className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md"
+  >
+    +
+  </button>
+</div>
+
 
             <input
               type="number"
               name="price"
               value={formData.price || ""}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md mb-2"
+              className="w-full p-2 border rounded-md mb-2 text-black"
               placeholder="Price"
             />
 
@@ -177,7 +217,7 @@ const AdminProducts = () => {
               name="category"
               value={formData.category || ""}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md mb-2"
+              className="w-full p-2 border rounded-md mb-2 text-black"
               placeholder="Category"
             />
 
@@ -185,7 +225,7 @@ const AdminProducts = () => {
               name="description"
               value={formData.description || ""}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md mb-2"
+              className="w-full p-2 border rounded-md mb-2 text-black"
               placeholder="Description"
             />
 

@@ -35,16 +35,14 @@ function CartPage() {
               <React.Fragment key={s.step}>
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
-                      s.active ? "bg-red-600 text-black" : "bg-gray-200 text-black"
-                    }`}
+                    className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${s.active ? "bg-red-600 text-black" : "bg-gray-200 text-black"
+                      }`}
                   >
                     {s.step}
                   </div>
                   <span
-                    className={`text-xs mt-1 ${
-                      s.active ? "text-red-600 font-semibold" : "text-gray-500"
-                    }`}
+                    className={`text-xs mt-1 ${s.active ? "text-red-600 font-semibold" : "text-gray-500"
+                      }`}
                   >
                     {s.label}
                   </span>
@@ -87,12 +85,12 @@ function CartPage() {
                         <h3 className="font-semibold text-black text-sm">
                           {item.name}
                         </h3>
-                       <p className="text-xs">
-  {item.size && (
-    <span className="text-black">Size: {item.size}</span>
-  )}
-  {item.color && <span> {item.size ? " | " : ""}Color: {item.color}</span>}
-</p>
+                        <p className="text-xs">
+                          {item.size && (
+                            <span className="text-black">Size: {item.size}</span>
+                          )}
+                          {item.color && <span> {item.size ? " | " : ""}Color: {item.color}</span>}
+                        </p>
 
                         <div className="flex items-center mt-2">
                           <button
@@ -163,7 +161,7 @@ function CartPage() {
                 <div className="mt-4 text-xs text-gray-600 space-y-1">
                   <p className="flex items-center">
                     <Check className="w-3.5 h-3.5 mr-2 text-green-500" />
-                    Free shipping 
+                    Free shipping
                   </p>
                   <p className="flex items-center">
                     <Check className="w-3.5 h-3.5 mr-2 text-green-500" />

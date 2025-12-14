@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import api from "../Api/AxiosInstance";
 import { AuthContext } from "../Context/AuthContext";
 import { CartContext } from "../Context/CartContext";
+import { OrderContext } from "../Context/OrderContext";
 
 const initialState = {
   firstname: "",
@@ -36,6 +37,10 @@ function ShippingPage() {
   const [isSaved, setIsSaved] = useState(false);
   const { user } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
+
+  const {deductStockAfterOrder}=useContext(OrderContext);
+
+
   const navigate = useNavigate();
   const location = useLocation();
   const { product, quantity } = location.state || {};

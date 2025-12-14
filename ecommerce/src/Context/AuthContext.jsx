@@ -1,6 +1,8 @@
 import React, { createContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import api from "../Api/AxiosInstance";
+import { redirect } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -19,36 +21,47 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setLoginError("");
 
+  // ADMIN LOGIN LOGIC
+  if (loginEmail === "rahees678@gmail.com" && loginPassword === "admin@123") {
+    const adminUser = {
+      firstName: "Admin",
+      lastName: "User",
+      email: loginEmail,
+      role: "admin",
+    };
+
+    setUser(adminUser);
+    localStorage.setItem("user",JSON.stringify(adminUser));
+
+    return {success:true,user:adminUser,redirectTo:"/admin/dashboard"};
+  }
+
     try {
-      const response = await axios.get(
-        `http://localhost:5010/users?email=${loginEmail.trim()}&password=${loginPassword.trim()}`
-      );
+      const response = await api.get("/users", {
+        params: {
+          email: loginEmail.trim(),
+          password: loginPassword.trim(),
+        },
+      });
+
 
       if (response.data.length > 0) {
         const loggedUser = response.data[0];
         setUser(loggedUser);
-        
+
         // FIX: Store the entire user object, not just the ID
         localStorage.setItem("user", JSON.stringify(loggedUser));
-        setLoginError("");
-        
-        // Check for redirect URL
-        const redirectTo = localStorage.getItem('redirectAfterLogin');
-        if (redirectTo) {
-          localStorage.removeItem('redirectAfterLogin');
-          return { success: true, user: loggedUser, redirectTo };
-        }
-        
-        return { success: true, user: loggedUser };
-      } else {
-        setLoginError("Invalid email or password");
-        return { success: false };
+       
+         return { success: true, user: loggedUser };
+      }else{
+        setLoginError("Invalid Email and Password");
+        return {success:false};
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      setLoginError("Something went wrong. Please try again.");
-      return { success: false };
-    } finally {
+    }catch(error){
+      console.error("Login Erorr:",error);
+      setLoginError("Something went wrong");
+      return{success:false}
+    }finally{
       setLoading(false);
     }
   };
@@ -57,9 +70,13 @@ export const AuthProvider = ({ children }) => {
   const loginAdmin = async (adminEmail, adminPassword) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost:5010/users?email=${adminEmail}&password=${adminPassword}&role=admin`
-      );
+      const response = await api.get("/users", {
+        params: {
+          email: adminEmail,
+          password: adminPassword,
+          role: "admin",
+        },
+      });
 
       if (response.data.length > 0) {
         const adminUser = response.data[0];
@@ -94,13 +111,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      setUser, 
-      loginuser, 
-      loginAdmin, 
-      loginError, 
-      logout, 
+    <AuthContext.Provider value={{
+      user,
+      setUser,
+      loginuser,
+      loginAdmin,
+      loginError,
+      logout,
       loading,
       updateUser // Add updateUser function
     }}>

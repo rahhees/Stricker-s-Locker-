@@ -48,7 +48,7 @@ function Product() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20 pb-10 px-4>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20 pb-10 px-4
  bg-blue-600">
       {/* Filters & Sorting */}
       <div className="max-w-7xl mx-auto flex flex-col gap-4 mb-15">
@@ -89,7 +89,7 @@ function Product() {
               onAddToCart={addToCart}
               onAddToWishlist={addToWishlist}
               isInWishlist={isInWishlist}
-              onClick={() => navigate(`/products/${p.id}`)}
+              onClick={() => product.stock>0 &&  navigate(`/products/${p.id}`)}
           
             />
           ))}

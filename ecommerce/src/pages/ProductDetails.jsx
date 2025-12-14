@@ -37,6 +37,7 @@ function ProductDetails() {
 
   // 🧩 Zoom functionality
   const handleMouseMove = (e) => {
+    console.log(e.clientX)
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
@@ -55,7 +56,7 @@ function ProductDetails() {
       try {
         const res = await api.get(`/products/${id}`);
         setProduct(res.data);
-        console.log("Product api response",res.data)
+        console.log("Product api response", res.data)
 
         const allRes = await api.get("/products");
         const related = allRes.data.filter(
@@ -98,11 +99,11 @@ function ProductDetails() {
     );
   }
 
- const productImages = product.images
-  ? Array.isArray(product.images)
-    ? product.images
-    : [product.images]
-  : [product.image || "https://via.placeholder.com/600x600"];
+  const productImages = product.images
+    ? Array.isArray(product.images)
+      ? product.images
+      : [product.images]
+    : [product.image || "https://via.placeholder.com/600x600"];
 
 
   return (
@@ -163,8 +164,8 @@ function ProductDetails() {
                   key={index}
                   onClick={() => setSelectedImage(index)}
                   className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 ${selectedImage === index
-                      ? "border-black shadow-lg"
-                      : "border-gray-200 hover:border-gray-300"
+                    ? "border-black shadow-lg"
+                    : "border-gray-200 hover:border-gray-300"
                     }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
@@ -329,7 +330,7 @@ function ProductDetails() {
                   id="relatedScroll"
                   className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide"
                 >
-                  
+
                   {relatedProducts.map((item) => (
                     <div key={item.id} className="flex-shrink-0 w-60 lg:w-[22%]"> {/* Using w-60 as a fixed size for better mobile scrolling */}
                       <ProductCard
@@ -338,7 +339,7 @@ function ProductDetails() {
                         onAddToWishlist={addToWishlist}
                         isInWishlist={isInWishlist}
                         viewMode="grid"
-                      
+
                         // Ensure navigation works on the new card wrapper
                         onClick={() => navigate(`/products/${item.id}`)}
                       />
@@ -377,7 +378,7 @@ function ProductDetails() {
             </div>
           </div>
         )}
-  
+
       </div>
     </div>
   );

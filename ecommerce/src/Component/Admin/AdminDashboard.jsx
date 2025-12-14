@@ -135,7 +135,7 @@ const AdminDashboard = () => {
               });
 
               if (order.amount && order.date) {
-                totalRevenue += order.amount;
+                totalRevenue += Number(order.amount) ||0;
                 const day = new Date(order.date).toISOString().split('T')[0];
                 if (!salesByDay[day]) salesByDay[day] = 0;
                 salesByDay[day] += order.amount;
@@ -163,11 +163,15 @@ const AdminDashboard = () => {
         setTopProducts(topProductsList);
 
         // Get recent orders (last 5)
-        const sortedOrders = allOrders.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+      const sortedOrders = [...allOrders]
+      .filter(o=>o.date)
+  .sort((a, b) => new Date(b.date) - new Date(a.date))
+  .slice(0, 5);
+
         setRecentOrders(sortedOrders);
 
         setOrdersData(allOrders);
-        setRevenue(totalRevenue);
+        setRevenue(Number(totalRevenue.toFixed(2)));
         setOrdersCount(totalOrders);
 
         // Prepare daily sales data for chart
@@ -193,11 +197,11 @@ const AdminDashboard = () => {
 
     return Object.entries(categoryCount).map(([name, value]) => ({ name, value }));
   };
-  
+
   const processCustomerGrowthData = (users) => {
     // First, collect all login activity from users
     const loginActivity = [];
-    
+
     users.forEach(user => {
       // Check if user has loginHistory array
       if (user.loginHistory && Array.isArray(user.loginHistory)) {
@@ -218,14 +222,14 @@ const AdminDashboard = () => {
         });
       }
     });
-    
+
     // Group login activity by month
     const monthlyData = {};
-    
+
     loginActivity.forEach(login => {
       const d = new Date(login.timestamp);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-      
+
       if (!monthlyData[key]) {
         monthlyData[key] = {
           monthLabel: d.toLocaleString("default", { month: "short", year: "numeric" }),
@@ -233,12 +237,12 @@ const AdminDashboard = () => {
           totalLogins: 0
         };
       }
-      
+
       // Add user to unique users set for this month
       monthlyData[key].uniqueUsers.add(login.userId);
       monthlyData[key].totalLogins += 1;
     });
-    
+
     // Convert to array and calculate cumulative values
     let cumulativeUsers = 0;
     const result = Object.entries(monthlyData)
@@ -246,7 +250,7 @@ const AdminDashboard = () => {
       .map(([monthKey, data]) => {
         const uniqueUsersCount = data.uniqueUsers.size;
         cumulativeUsers += uniqueUsersCount;
-        
+
         return {
           month: data.monthLabel,
           newCustomers: uniqueUsersCount,
@@ -254,7 +258,7 @@ const AdminDashboard = () => {
           totalLogins: data.totalLogins
         };
       });
-    
+
     return result;
   };
 
@@ -279,8 +283,8 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    toast.success("Logged out successfully");
-    navigate("/admin/login", { replace: true });
+    toast.success("Admin Logged out successfully");
+    navigate("/login", { replace: true });
   };
 
   const renderDataView = () => {
@@ -667,7 +671,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-             
+
               {/* Additional Charts and Data */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Product Categories */}
@@ -782,7 +786,7 @@ const AdminDashboard = () => {
       {/* Overlay for mobile when sidebar is openn */}
 
       {sidebarOpen && (
-        <div  className="fixed inset-0 bg-black bg-opacity-50 z-0 lg:hidden"  onClick={() => setSidebarOpen(false)}/>
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-0 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
     </div>
   );

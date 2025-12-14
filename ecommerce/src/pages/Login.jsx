@@ -97,6 +97,11 @@ function AuthPage() {
     setIsLoading(true);
     const result = await loginuser(loginEmail, loginPassword);
     if (result.success) {
+      if(result.redirectTo){
+        navigate(result.redirectTo);
+      }else{
+        navigate("/")
+      }
       toast.success(`Welcome back, ${result.user.firstName}!`);
       
       // Redirect to intended page or home
@@ -297,27 +302,10 @@ function AuthPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
-              </div>
+             
             </div>
             
-            <div className="flex gap-3">
-              <button
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg py-2.5 text-gray-700 hover:bg-gray-50 transition duration-150 text-sm sm:text-base"
-              >
-                <FaGoogle className="text-red-500" />
-                <span>Google</span>
-              </button>
-              <button
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg py-2.5 text-gray-700 hover:bg-gray-50 transition duration-150 text-sm sm:text-base"
-              >
-                <FaFacebook className="text-blue-600" />
-                <span>Facebook</span>
-              </button>
-            </div>
+         
           </div>
         </div>
       </div>

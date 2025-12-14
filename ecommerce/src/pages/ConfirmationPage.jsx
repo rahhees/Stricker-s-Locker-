@@ -236,12 +236,12 @@ function ConfirmationPage() {
                   {step.status}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">{step.date}</p>
-                {index < 3 && <div className="h-0.5 bg-gray-300 w-full -mt-4" />}
+                {}
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </div>                            
     </div>
   );
 }
