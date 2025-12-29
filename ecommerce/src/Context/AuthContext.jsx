@@ -1,19 +1,18 @@
 import React, { createContext, useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import api from "../Api/AxiosInstance";
-import { redirect } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
   const [loginError, setLoginError] = useState("");
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
+
 
   // LOGIN function
-  const loginuser = async (loginEmail, loginPassword) => {
-    if (!loginEmail || !loginPassword) {
+  const loginuser = async (email, password) => {
+    if (!email || !password) {
       setLoginError("Please fill in both fields");
       return { success: false };
     }
@@ -21,76 +20,90 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setLoginError("");
 
-  // ADMIN LOGIN LOGIC
-  if (loginEmail === "rahees678@gmail.com" && loginPassword === "admin@123") {
-    const adminUser = {
-      firstName: "Admin",
-      lastName: "User",
-      email: loginEmail,
-      role: "admin",
-    };
 
-    setUser(adminUser);
-    localStorage.setItem("user",JSON.stringify(adminUser));
-
-    return {success:true,user:adminUser,redirectTo:"/admin/dashboard"};
-  }
 
     try {
-      const response = await api.get("/users", {
-        params: {
-          email: loginEmail.trim(),
-          password: loginPassword.trim(),
-        },
+      // FIX 1: Added await before api.post
+      const response = await api.post("/Auth/Login", {
+        email: email.trim(),
+        password: password.trim(),
       });
 
+      console.log("Login Response:", response.data); // Debug log
 
-      if (response.data.length > 0) {
-        const loggedUser = response.data[0];
-        setUser(loggedUser);
+      if (response.data && response.data.data) {
+        const userData = {
+          ...response.data.data,
+          email: email,
+        };
 
-        // FIX: Store the entire user object, not just the ID
-        localStorage.setItem("user", JSON.stringify(loggedUser));
-       
-         return { success: true, user: loggedUser };
-      }else{
-        setLoginError("Invalid Email and Password");
-        return {success:false};
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        toast.success("Login Successful!");
+
+        // Check user role and redirect accordingly
+        let redirectTo = "/";
+        if (userData.role === "Admin" || userData.role === "admin") {
+          redirectTo = "/admin/dashboard";
+        }
+
+        return {
+          success: true,
+          user: userData,
+          redirectTo: redirectTo
+        };
+      } else {
+        setLoginError("Invalid response from server");
+        toast.error("Login failed. Please try again.");
+        return { success: false };
       }
-    }catch(error){
-      console.error("Login Erorr:",error);
-      setLoginError("Something went wrong");
-      return{success:false}
-    }finally{
+    } catch (error) {
+      console.error("Login Error:", error);
+
+      if (error.response) {
+        const errormessage = error.response.data?.message ||
+          error.response.data?.title ||
+          "Login failed. Please try again.";
+        setLoginError(errormessage);
+        toast.error(errormessage);
+      } else if (error.request) {
+        setLoginError("Cannot connect to server. Please check your connection.");
+        toast.error("Cannot connect to server");
+      } else {
+        setLoginError("Something went wrong");
+        toast.error("Something went wrong");
+      }
+
+      return { success: false };
+    } finally {
       setLoading(false);
     }
   };
 
-  // LOGIN ADMIN function - Fixed to store properly
-  const loginAdmin = async (adminEmail, adminPassword) => {
+  // REGISTER function
+  const registerUser = async (userData) => {
     setLoading(true);
     try {
-      const response = await api.get("/users", {
-        params: {
-          email: adminEmail,
-          password: adminPassword,
-          role: "admin",
-        },
-      });
+      const response = await api.post("/Auth/Register", userData);
 
-      if (response.data.length > 0) {
-        const adminUser = response.data[0];
-        setUser(adminUser);
-        localStorage.setItem("user", JSON.stringify(adminUser)); // Store full user object
-        toast.success("Admin login successful!");
-        return { success: true, user: adminUser };
+      if (response.status === 201) {
+        toast.success("Registration successful! Please login.");
+        return { success: true };
       } else {
-        toast.error("Invalid admin credentials");
+        toast.error("Registration failed");
         return { success: false };
       }
     } catch (error) {
-      console.error("Admin login error:", error);
-      toast.error("Admin login failed");
+      console.error("Registration Error:", error);
+
+      if (error.response) {
+        const errorMessage = error.response.data?.message || "Registration failed";
+        toast.error(errorMessage);
+      } else {
+        toast.error("Cannot connect to server");
+      }
+
       return { success: false };
     } finally {
       setLoading(false);
@@ -104,10 +117,19 @@ export const AuthProvider = ({ children }) => {
     toast.info("Logged out successfully");
   };
 
-  // Function to update user data (for order history, profile updates, etc.)
-  const updateUser = (updatedUserData) => {
-    setUser(updatedUserData);
-    localStorage.setItem("user", JSON.stringify(updatedUserData));
+  // Function to check if user is authenticated
+  const isAuthenticated = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user && user.accessToken;
+  };
+
+  // Function to get auth header for API calls
+  const getAuthHeader = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.accessToken) {
+      return { Authorization: `Bearer ${user.accessToken}` };
+    }
+    return {};
   };
 
   return (
@@ -115,11 +137,12 @@ export const AuthProvider = ({ children }) => {
       user,
       setUser,
       loginuser,
-      loginAdmin,
+      registerUser,
       loginError,
       logout,
       loading,
-      updateUser // Add updateUser function
+      isAuthenticated,
+      getAuthHeader
     }}>
       {children}
     </AuthContext.Provider>

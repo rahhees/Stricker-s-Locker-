@@ -27,9 +27,9 @@ import NewProduct from './Component/Admin/NewProduct';
 import AboutPage from './pages/AboutPage';
 import ViewUsers from './Component/Admin/ViewUsers';
 import AdminDashboard from './Component/Admin/AdminDashboard';
-import footballAnimation from './animation/FootballAnimation.json'
-import Lottie from 'lottie-react'
-import '../src/App.css'
+import footballAnimation from './animation/FootballAnimation.json';
+import Lottie from 'lottie-react';
+import '../src/App.css';
 
 // Football-themed loading component
 const Animation = () => {
@@ -78,8 +78,10 @@ function App() {
     '/404'
   ];
 
-  // Public paths that don't require authentication
-  const publicPaths = ['/', '/products', '/products/:id', '/contact', '/about'];
+  // Check if current path should hide navbar
+  const shouldHideNavbar = hideNavbarPaths.some(path => 
+    location.pathname.startsWith(path)
+  );
 
   if (showLoader) {
     return <Animation />;
@@ -93,10 +95,21 @@ function App() {
             <WishlistProvider>
               <CartProvider>
                 <OrderProvider>
-                  <ToastContainer position='top-right' autoClose={2000} />
+                  <ToastContainer 
+                    position='top-right' 
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                  />
 
                   {/* Show Navbar only if path is not in hidden list */}
-                  {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
+                  {!shouldHideNavbar && <Navbar />}
 
                   <PaymentBlocker>
                     <Routes>
@@ -112,7 +125,7 @@ function App() {
                       <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
                       <Route path="/admin/login" element={<LoginAdmin />} />
 
-                      {/* Admin protected routes */}
+                      {/* Admin protected routes - using OUTLET pattern */}
                       <Route element={<ProtectedRoute roles={['admin']} />}>
                         <Route path="/admin/dashboard" element={<AdminDashboard />} />
                         <Route path="/admin/orderadmin" element={<OrderAdmin />} />
@@ -129,15 +142,26 @@ function App() {
                         <Route path='/profile' element={<ProfilePage />} />
                         <Route path='/payment' element={<PaymentPage />} />
                         <Route path='/order' element={<OrderDetails />} />
-                      </Route>
-
-                      {/* Confirmation route - special handling to prevent back navigation */}
-                      <Route element={<ProtectedRoute requireAuth={true} />}>
                         <Route path='/confirmation' element={<ConfirmationPage />} />
                       </Route>
 
+                      {/* Alternative pattern: Single route protection */}
+                      {/* 
+                      <Route path='/profile' element={
+                        <ProtectedRoute requireAuth={true}>
+                          <ProfilePage />
+                        </ProtectedRoute>
+                      } />
+                      */}
+
                       {/* 404 page */}
-                      <Route path="/404" element={<h1 className="text-white text-center mt-20 text-2xl">404 Page Not Found</h1>} />
+                      <Route path="/404" element={
+                        <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+                          <h1 className="text-white text-center text-2xl md:text-3xl">
+                            404 Page Not Found
+                          </h1>
+                        </div>
+                      } />
                       <Route path="*" element={<Navigate to="/404" replace />} />
                     </Routes>
                   </PaymentBlocker>
