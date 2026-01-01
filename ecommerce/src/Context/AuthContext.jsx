@@ -12,14 +12,8 @@ export const AuthProvider = ({ children }) => {
 
   // LOGIN function
   const loginuser = async (email, password) => {
-    if (!email || !password) {
-      setLoginError("Please fill in both fields");
-      return { success: false };
-    }
 
     setLoading(true);
-    setLoginError("");
-
 
 
     try {
@@ -37,8 +31,15 @@ export const AuthProvider = ({ children }) => {
           email: email,
         };
 
+        //store token 
+
+        localStorage.setItem("accessToken",userData.accessToken);
+        localStorage.setItem("refreshToken",userData.refreshToken);
+
+        localStorage.setItem("user",JSON.stringify(userData));
+
         setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
+        
 
         toast.success("Login Successful!");
 
@@ -51,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         return {
           success: true,
           user: userData,
-          redirectTo: redirectTo
+          redirectTo
         };
       } else {
         setLoginError("Invalid response from server");
@@ -114,13 +115,14 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     toast.info("Logged out successfully");
   };
 
   // Function to check if user is authenticated
   const isAuthenticated = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    return user && user.accessToken;
+    return !!localStorage.getItem("accessToken");
   };
 
   // Function to get auth header for API calls

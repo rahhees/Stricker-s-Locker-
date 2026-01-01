@@ -3,7 +3,7 @@ import React, { useReducer, useState, useContext } from "react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import api from "../Api/AxiosInstance";
 import { AuthContext } from "../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 // REGISTRATION REDUCER
@@ -46,7 +46,14 @@ function AuthPage() {
 
 
   const { loginuser, loginError } = useContext(AuthContext);
+  const location  = useLocation();
   const navigate = useNavigate();
+
+  const fromPath = location.state?.from?.pathname || "/";
+
+  
+
+    navigate(fromPath, { replace: true });
 
   // Register User
   const registerUser = async (data) => {

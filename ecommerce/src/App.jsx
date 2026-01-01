@@ -7,13 +7,13 @@ import { CartProvider } from './Context/CartContext';
 import { WishlistProvider } from './Context/WishlistContext';
 import Cart from './pages/CartPage';
 import WhislistPage from './pages/WhislistPage';
-import ProtectedRoute from './Component/Routes/ProtectedRoute';
+// import ProtectedRoute from './Component/Routes/ProtectedRoute';
 import { SearchProvider } from './Context/SearchContext';
 import ShippingPage from './pages/ShippingPage';
 import { ToastContainer } from "react-toastify";
 import ProductDetails from './pages/ProductDetails';
 import "react-toastify/dist/ReactToastify.css";
-import ProfilePage from './pages/ProfilePage';
+// import ProfilePage from './pages/ProfilePage';
 import Navbar from './Component/Navbar';
 import PaymentPage from './pages/PaymentPage';
 import { OrderProvider } from './Context/OrderContext';
@@ -30,6 +30,7 @@ import AdminDashboard from './Component/Admin/AdminDashboard';
 import footballAnimation from './animation/FootballAnimation.json';
 import Lottie from 'lottie-react';
 import '../src/App.css';
+import ProfilePage2 from './pages/Profile/ProfilePage2';
 
 // Football-themed loading component
 const Animation = () => {
@@ -126,24 +127,30 @@ function App() {
                       <Route path="/admin/login" element={<LoginAdmin />} />
 
                       {/* Admin protected routes - using OUTLET pattern */}
-                      <Route element={<ProtectedRoute roles={['admin']} />}>
+                      {/* <Route element={<ProtectedRoute roles={['admin']} />}>
                         <Route path="/admin/dashboard" element={<AdminDashboard />} />
                         <Route path="/admin/orderadmin" element={<OrderAdmin />} />
                         <Route path="/admin/productadmin" element={<AddProduct />} />
                         <Route path="/admin/newproductadmin" element={<NewProduct />} />
                         <Route path="/admin/users" element={<ViewUsers />} />
-                      </Route>
+                      </Route> */}
 
                       {/* User protected routes - require authentication */}
-                      <Route element={<ProtectedRoute requireAuth={true} />}>
+                      {/* <Route element={<ProtectedRoute requireAuth={true} />}>
                         <Route path='/cartpage' element={<Cart />} />
                         <Route path='/wishlist' element={<WhislistPage />} />
                         <Route path='/shipping' element={<ShippingPage />} />
-                        <Route path='/profile' element={<ProfilePage />} />
+                     */}
+
+                       
+                          {/* <Route path='/profile' element={<ProfilePage2/>}/> */}
+
+
+{/* 
                         <Route path='/payment' element={<PaymentPage />} />
                         <Route path='/order' element={<OrderDetails />} />
                         <Route path='/confirmation' element={<ConfirmationPage />} />
-                      </Route>
+                      </Route> */}
 
                       {/* Alternative pattern: Single route protection */}
                       {/* 
