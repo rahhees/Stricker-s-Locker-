@@ -9,6 +9,8 @@ const EditForm = ({ user, setUser }) => {
     }));
   };
 
+const inputStyle = "w-full bg-gray-900/50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder-gray-400";
+
   return (
     <div className="space-y-4">
       <input
@@ -16,7 +18,7 @@ const EditForm = ({ user, setUser }) => {
         value={user.firstName || ""}
         onChange={handleChange}
         placeholder="First Name"
-        className="input"
+        className={inputStyle}
       />
 
       <input
@@ -24,33 +26,20 @@ const EditForm = ({ user, setUser }) => {
         value={user.lastName || ""}
         onChange={handleChange}
         placeholder="Last Name"
-        className="input"
+        className={inputStyle}
       />
 
-      <input
-        name="email"
-        value={user.email || ""}
-        onChange={handleChange}
-        placeholder="Email"
-        className="input"
-        disabled
-      />
+    
 
       <input
         name="phone"
         value={user.phone || ""}
         onChange={handleChange}
         placeholder="Phone"
-        className="input"
+        className={inputStyle}
       />
 
-      <input
-        name="address"
-        value={user.address || ""}
-        onChange={handleChange}
-        placeholder="Address"
-        className="input"
-      />
+   
     </div>
   );
 };

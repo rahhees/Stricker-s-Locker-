@@ -1,6 +1,7 @@
 const ProfileNavigation = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { key: "profile", label: "Profile" },
+    {key :"orders",label:"Orders"},
     { key: "security", label: "Security" },
     { key: "notifications", label: "Notifications" }
   ];

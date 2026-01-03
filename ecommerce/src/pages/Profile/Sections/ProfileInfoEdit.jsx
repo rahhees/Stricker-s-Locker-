@@ -8,7 +8,6 @@ const handleSave = async () => {
     const formData = new FormData();
     formData.append("FirstName", user.firstName);
     formData.append("LastName", user.lastName);
-    formData.append("Email", user.email);
     formData.append("Phone", user.phone || "");
     formData.append("Address", user.address || "");
 

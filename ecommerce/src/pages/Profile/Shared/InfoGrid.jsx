@@ -5,8 +5,8 @@ const InfoGrid = ({ user }) => {
     { label: "First Name", value: user.firstName },
     { label: "Last Name", value: user.lastName },
     { label: "Email", value: user.email },
-    { label: "Phone", value: user.phone || "—" },
-    { label: "Address", value: user.address || "—" },
+    { label: "Phone", value: user.phone || "-" },
+  
   ];
 
   return (

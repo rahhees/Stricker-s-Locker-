@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {useProfile} from "./Hooks/UserProfile";
 import ProfileSidebar from "./Sidebar/ProfileSidebar";
 import ProfileInfoEdit from "./Sections/ProfileInfoEdit";
@@ -7,18 +7,35 @@ import ProfileSecurity from "./Sections/ProfileSecurity";
 import ProfileNotifications from "./Sections/ProfileNotifications";
 import ProfileLoader from "./Shared/ProfileLoader";
 import PageLayout from "./Layout/PageLayout";
+import { OrderProvider } from "../../Context/OrderContext";
+import ProfileOrders from "./Sections/ProfileOrderDetails";
+import {  useNavigate } from "react-router-dom";
+
 
 const ProfilePage2 = () => {
+  const navigate  = useNavigate();
   const { user, setUser, isLoading } = useProfile();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
 
-  if (isLoading) return <ProfileLoader />;
-  if (!user) return null;
+
+  useEffect(()=>{
+    if(!isLoading && !user){
+      navigate("/login")
+    }
+  },[isLoading,user,navigate])
+
+
+  if (isLoading) return <ProfileLoader />;    
+  if(!user) return null;
+
+  
+  
 
   return (
     <PageLayout>
-      {/* Left Sidebar */}
+
+
       <ProfileSidebar
         user={user}
         setUser={setUser}
@@ -29,7 +46,7 @@ const ProfilePage2 = () => {
       {/* Right Main Content - Remove the extra div wrappers */}
       <div className="lg:col-span-3">
         {activeTab === "profile" && (
-          <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">
+         <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">
             {isEditing ? (
               <ProfileInfoEdit
                 user={user}
@@ -45,6 +62,16 @@ const ProfilePage2 = () => {
             )}
           </div>
         )}
+
+       {activeTab === "orders" && (
+          <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">
+            <ProfileOrders />
+          </div>
+        )}
+
+        
+
+        
         
         {activeTab === "security" && (
           <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">

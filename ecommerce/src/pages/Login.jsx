@@ -46,14 +46,10 @@ function AuthPage() {
 
 
   const { loginuser, loginError } = useContext(AuthContext);
-  const location  = useLocation();
+
   const navigate = useNavigate();
 
-  const fromPath = location.state?.from?.pathname || "/";
 
-  
-
-    navigate(fromPath, { replace: true });
 
   // Register User
   const registerUser = async (data) => {
@@ -123,16 +119,22 @@ const registrationData = {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    console.log("Before login result");
     
     const result = await loginuser(loginEmail, loginPassword);
+
+    console.log("Login result:", result);
     
     if (result.success) {
-      // Check user role and redirect accordingly
+       const from = location.state?.from?.pathname || "/";
+         console.log("Navigating to:", from);
       if (result.user.role === "Admin") {
-        navigate("/admin/dashboard");
+        navigate("/admin/dashboard",{replace:true});
       } else {
-        navigate("/");
+        navigate(from ,{replace :true});
       }
+      console.log("After navigate call");
     }
     
     setIsLoading(false);

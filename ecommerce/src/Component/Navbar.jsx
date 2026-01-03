@@ -14,6 +14,8 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+
+
   
   const { user } = useContext(AuthContext);
 
@@ -228,13 +230,7 @@ const Navbar = () => {
                       <User size={16} className="mr-2" />
                       My Profile
                     </button>
-                    <button
-                      onClick={() => handleNavigate("/Order")}
-                      className="w-full text-left px-4 py-3 text-gray-200 hover:bg-gray-700/80 hover:text-white transition-all duration-200 flex items-center"
-                    >
-                      <Trophy size={16} className="mr-2" />
-                      Order History
-                    </button>
+               
                     <hr className="my-2 border-gray-600" />
                     <button
                       onClick={handleSignOut}
@@ -347,7 +343,7 @@ const Navbar = () => {
               </button>
               
               <button
-                onClick={() => handleNavigate("/Order")}
+                onClick={() => handleNavigate("/orders")}
                 className="flex items-center w-full text-left py-3 px-4 text-gray-200 hover:text-white hover:bg-gray-700/80 font-medium transition-all duration-200 rounded-full"
               >
                 <Trophy size={16} className="mr-3" />
