@@ -13,4 +13,8 @@ export const authService = {
 
   },
 
+  logout:async ()=>{
+    return await api.post("/auth/logout");
+  }
+
 }

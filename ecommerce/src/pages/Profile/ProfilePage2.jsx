@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {useProfile} from "./Hooks/UserProfile";
 import ProfileSidebar from "./Sidebar/ProfileSidebar";
 import ProfileInfoEdit from "./Sections/ProfileInfoEdit";
@@ -10,6 +10,7 @@ import PageLayout from "./Layout/PageLayout";
 import { OrderProvider } from "../../Context/OrderContext";
 import ProfileOrders from "./Sections/ProfileOrderDetails";
 import {  useNavigate } from "react-router-dom";
+import { AuthContext } from "../../Context/AuthContext";
 
 
 const ProfilePage2 = () => {
@@ -17,6 +18,8 @@ const ProfilePage2 = () => {
   const { user, setUser, isLoading } = useProfile();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
+
+ 
 
 
   useEffect(()=>{

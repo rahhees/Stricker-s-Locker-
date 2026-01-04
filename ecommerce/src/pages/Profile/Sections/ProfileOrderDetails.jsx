@@ -8,7 +8,7 @@ const ProfileOrders = () => {
   const [loading, setLoading] = useState(true);
 
   // Backend URL for images
-  const BASE_URL = "https://localhost:57401"; 
+  const BASE_URL = "https://localhost:5174"; 
 
   useEffect(() => {
     const fetchOrders = async () => {

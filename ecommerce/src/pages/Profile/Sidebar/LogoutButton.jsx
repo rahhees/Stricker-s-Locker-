@@ -6,9 +6,9 @@ const LogoutButton = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
 
-  const handleLogout = () => {
-    logout();        
-    navigate("/login");
+  const handleLogout =async () => {
+    await logout();
+    navigate('/login')
   };
 
   return (

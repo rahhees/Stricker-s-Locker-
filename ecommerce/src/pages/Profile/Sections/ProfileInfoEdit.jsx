@@ -8,21 +8,23 @@ const handleSave = async () => {
   try {
     
     const dataToSend = {
-      firstName :user.firstName,
-      lastName :user.lastName,
+      firstName :user.firstName ||user.FirstName ,
+      lastName :user.lastName || user.LastName,
       mobileNumber:user.mobileNumber || user.phone,
       profileImageFile:user.profileImageFile
     };
-   
-      
+
+    console.log("📤 Sending Update:", dataToSend);
+
     await userService.updateProfile(dataToSend)
     toast.success("Profile updated successfully");
 
     const updatedUser = await userService.getProfile();
     setUser(updatedUser);
 
+
  
-      if(oncancel) oncancel();
+      if(onCancel) onCancel();
 
   } catch (err) {
     console.error("Update Failed",err.response?.data)

@@ -15,7 +15,7 @@ const inputStyle = "w-full bg-gray-900/50 text-white border border-gray-600 roun
     <div className="space-y-4">
       <input
         name="firstName"
-        value={user.firstName || ""}
+        value={user.firstName ||user.FirstName || ""}
         onChange={handleChange}
         placeholder="First Name"
         className={inputStyle}
@@ -23,7 +23,7 @@ const inputStyle = "w-full bg-gray-900/50 text-white border border-gray-600 roun
 
       <input
         name="lastName"
-        value={user.lastName || ""}
+        value={user.lastName || user.LastName || ""}
         onChange={handleChange}
         placeholder="Last Name"
         className={inputStyle}
@@ -33,7 +33,7 @@ const inputStyle = "w-full bg-gray-900/50 text-white border border-gray-600 roun
 
       <input
         name="mobileNumber"
-        value={user.mobileNumber || ""}
+        value={user.mobileNumber ||user.phone || ""}
         onChange={handleChange}
         placeholder="Mobile Number"
         className={inputStyle}

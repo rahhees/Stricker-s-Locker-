@@ -12,7 +12,7 @@ getProfile :async ()=>{
 
         formData.append("FirstName",userData.firstName);
         formData.append("LastName",userData.lastName);
-        formData.append("MobileNumber",userData.mobileNumber);
+        formData.append("MobileNumber",userData.mobileNumber ||userData.phoneNumber);
 
         if(userData.profileImageFile){
           formData.append("ProfileImage",userData.profileImageFile);

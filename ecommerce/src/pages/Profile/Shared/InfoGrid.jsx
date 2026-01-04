@@ -2,10 +2,10 @@ const InfoGrid = ({ user }) => {
   if (!user) return null;
 
   const fields = [
-    { label: "First Name", value: user.firstName },
-    { label: "Last Name", value: user.lastName },
-    { label: "Email", value: user.email },
-    { label: "Mobile Number", value: user.mobileNumber || "-" },
+    { label: "First Name", value: user.firstName || user.FirstName },
+    { label: "Last Name", value: user.lastName || user.LastName },
+    { label: "Email", value: user.email  },
+    { label: "Mobile Number", value: user.mobileNumber || user.PhoneNumber },
   
   ];
 
