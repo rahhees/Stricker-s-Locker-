@@ -32,10 +32,10 @@ const inputStyle = "w-full bg-gray-900/50 text-white border border-gray-600 roun
     
 
       <input
-        name="phone"
-        value={user.phone || ""}
+        name="mobileNumber"
+        value={user.mobileNumber || ""}
         onChange={handleChange}
-        placeholder="Phone"
+        placeholder="Mobile Number"
         className={inputStyle}
       />
 

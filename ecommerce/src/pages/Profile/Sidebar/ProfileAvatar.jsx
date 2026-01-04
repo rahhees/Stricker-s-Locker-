@@ -1,52 +1,61 @@
+import { useState } from "react"; // Import useState for loading
+import { toast } from "react-toastify";
 import Avatar from "../Shared/Avatar";
+import { userService } from "../../../Services/UserService"; // Use your service!
 
-const ProfileAvatar = ({ user,setUser }) => {
- const handleImageChange = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+const ProfileAvatar = ({ user, setUser }) => {
+  const [uploading, setUploading] = useState(false);
 
-  if (!file.type.startsWith("image/")) {
-    toast.error("Please select a valid image file");
-    return;
-  }
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  if (file.size > 5 * 1024 * 1024) {
-    toast.error("Image size should be less than 5MB");
-    return;
-  }
+    // 1. Validation
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size should be less than 5MB");
+      return;
+    }
 
-  try {
-    const formData = new FormData();
-   formData.append("Image", file);
-  formData.append("FirstName", user.firstName);
-  formData.append("LastName", user.lastName);
-  formData.append("Email", user.email);
-  formData.append("Phone", user.phone || "");
-  formData.append("Address", user.address || "");
+    try {
+      setUploading(true); 
 
+      const dataToSend = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        mobileNumber: user.mobileNumber || user.phone, 
+        profileImageFile: file 
+      };
 
-    await api.put("/users/profile-update", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    });
+      // 3. Call Service (cleaner than api.put manually)
+      await userService.updateProfile(dataToSend);
 
-    toast.success("Profile image updated");
+      toast.success("Profile image updated");
 
-    
-    const res = await api.get("/users/profile");
-    setUser(res.data);
+      // 4. Refresh User Data to get the new Cloudinary URL
+      const updatedUser = await userService.getProfile();
+      setUser(updatedUser);
 
-  } catch (err) {
-    toast.error(err.response?.data?.message || "Image upload failed");
-  }
-};
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Image upload failed");
+    } finally {
+      setUploading(false); // Stop loading
+    }
+  };
 
   return (
-    <Avatar
-      image={user.image}
-      onChange={handleImageChange}
-    />
+    <div className={uploading ? "opacity-50 pointer-events-none" : ""}>
+      <Avatar
+        
+        image={user?.profileImageUrl} 
+        onChange={handleImageChange}
+      />
+      {uploading && <p className="text-xs text-center text-blue-400 mt-2">Uploading...</p>}
+    </div>
   );
 };
 

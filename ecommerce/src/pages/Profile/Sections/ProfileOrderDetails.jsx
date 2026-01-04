@@ -7,32 +7,31 @@ const ProfileOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Backend URL for images
+  const BASE_URL = "https://localhost:57401"; 
 
-  useEffect(()=>{
-              const fetchOrders = async () => {
-    try {
-      setLoading(true);
- 
-
-      const response = await orderService.getMyOrders();
-
-      setOrders(response.data ||response);
-      
-
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-      if(user){
-        fetchOrders();
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await orderService.getMyOrders();
+        
+        // Ensure we handle the array correctly
+        const data = response.data || response;
+        setOrders(Array.isArray(data) ? data : []);
+        
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        setOrders([]);
+      } finally {
+        setLoading(false);
       }
+    };
 
-  },[user])
-
-
-
+    if (user) {
+      fetchOrders();
+    }
+  }, [user]);
 
   if (loading) {
     return (
@@ -43,74 +42,114 @@ const ProfileOrders = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full object-cover">
       <h2 className="text-2xl font-bold text-white mb-6">My Orders</h2>
 
-      {orders.length === 0 ? (
+      {!orders || orders.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-          <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-          </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">No orders yet</h3>
-          <p className="text-gray-600">Start shopping to see your orders here</p>
+          <p className="text-gray-600">No orders found.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6">
-          {orders.map((order, index) => (
+        <div className="space-y-6">
+          {orders.map((order) => (
             <div
-              key={order.orderId || index}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              key={order.id} // ✅ FIX 1: Use 'id', not 'orderId'
+              className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
             >
-              {/* Order Header */}
-              <div className="bg-gradient-to-r from-green-600 to-green-500 p-6 text-white">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <h2 className="text-xl font-bold mb-1">
-                      Order #{order.orderId || index + 1}
-                    </h2>
-                    <p className="text-green-100 text-sm">
-                      {new Date(order.date || order.createdAt).toLocaleString("en-IN", {
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      })}
-                    </p>
-                  </div>
-                  <span
-                    className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                      order.status === "SUCCESS"
-                        ? "bg-white text-green-600"
-                        : "bg-orange-100 text-orange-600"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
+              {/* --- TOP HEADER --- */}
+              <div className="bg-gray-50 px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-100">
+                <div>
+                  {/* ✅ FIX 2: Use 'id' here too */}
+                  <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                    Order #{order.id}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Placed on{" "}
+                    {/* ✅ FIX 3: Use 'orderDate' */}
+                    {new Date(order.orderDate).toLocaleDateString("en-IN", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
                 </div>
+
+                <span
+                  className={`mt-2 md:mt-0 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                    order.status === "SUCCESS" || order.status === "Delivered"
+                      ? "bg-green-100 text-green-700"
+                      : order.status === "Cancelled"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-orange-100 text-orange-700"
+                  }`}
+                >
+                  {order.status || "Pending"}
+                </span>
               </div>
 
-              {/* Order Body */}
-              <div className="p-6">
-                <div className="space-y-4">
-                  {order.items.map((p) => (
-                    <div key={p.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                      <img
-                        src={p.image}
-                        alt={p.name}
-                        className="w-16 h-16 object-cover rounded-lg shadow-sm"
-                      />
-                      <div className="flex-grow">
-                        <p className="font-semibold text-gray-800">{p.name}</p>
-                        <p className="text-sm text-gray-600">
-                          Qty: {p.quantity} x ₹{p.price}
-                        </p>
+              {/* --- BODY: Product List --- */}
+              <div className="p-6 space-y-6">
+                {/* ✅ FIX 4: Use 'orderItems' (not 'items') */}
+                {order.orderItems?.map((item, index) => {
+                  console.log("order item ",item)
+                  
+                  // Logic for Image URLs
+                  let imageUrl = item.imageUrl;
+                  if (imageUrl && !imageUrl.startsWith("http")) {
+                      imageUrl = `${BASE_URL}${imageUrl}`;
+                  }
+
+                  return (
+                    <div key={index} className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                      
+                      {/* PRODUCT IMAGE */}
+                      <div className="relative flex-shrink-0 w-24 h-24 border rounded-xl overflow-hidden border-gray-700/50">
+                        {imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={item.productName || "Product"}
+                            className="w-full h-full object-contain p-1"
+                            onError={(e) => {
+                              e.target.src = "https://via.placeholder.com/150?text=No+Img";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <span className="text-xs">No Image</span>
+                          </div>
+                        )}
                       </div>
-                      <p className="font-bold text-green-600">
-                        ₹{p.price * p.quantity}
-                      </p>
+
+                      {/* DETAILS */}
+                      <div className="flex-grow">
+                        <h4 className="text-lg font-bold text-gray-800">{item.productName || item.name}</h4>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md border border-gray-200">
+                            Qty: {item.quantity}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* PRICE */}
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-gray-900">
+                          ₹{item.price * item.quantity}
+                        </p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-gray-500">₹{item.price} each</p>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
+              </div>
+
+              {/* --- FOOTER: Total --- */}
+              <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-between items-center">
+                <span className="text-gray-600 font-medium">Total Amount</span>
+                <span className="text-xl font-bold text-green-700">
+                  ₹{order.totalAmount}
+                </span>
               </div>
             </div>
           ))}

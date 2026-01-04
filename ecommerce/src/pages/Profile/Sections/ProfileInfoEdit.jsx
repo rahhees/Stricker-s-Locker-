@@ -1,23 +1,28 @@
 import { toast } from "react-toastify";
 import EditForm from "../Shared/EditForm";
 import SaveCancelButtons from "../Shared/SaveCancelButtons";
+import { userService } from "../../../Services/UserService";
 
 const ProfileInfoEdit = ({ user, setUser, onCancel }) => {
 const handleSave = async () => {
   try {
-    const formData = new FormData();
-    formData.append("FirstName", user.firstName);
-    formData.append("LastName", user.lastName);
-    formData.append("Phone", user.phone || "");
-    formData.append("Address", user.address || "");
-
-    await api.put("/users/profile-update", formData);
+    
+    const dataToSend = {
+      firstName :user.firstName,
+      lastName :user.lastName,
+      mobileNumber:user.mobileNumber || user.phone,
+      profileImageFile:user.profileImageFile
+    };
+   
       
+    await userService.updateProfile(dataToSend)
     toast.success("Profile updated successfully");
-    setIsEditing(false);
 
-    const res = await api.get("/users/profile");
-    setUser(res.data);
+    const updatedUser = await userService.getProfile();
+    setUser(updatedUser);
+
+ 
+      if(oncancel) oncancel();
 
   } catch (err) {
     console.error("Update Failed",err.response?.data)

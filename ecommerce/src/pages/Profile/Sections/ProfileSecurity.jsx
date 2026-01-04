@@ -34,19 +34,18 @@ const ProfileSecurity = () => {
       setLoading(true);
 
       const payload = {
-    currentPassword: passwordData.currentPassword, 
-    newPassword: passwordData.newPassword         
+    CurrentPassword: passwordData.currentPassword, 
+    NewPassword: passwordData.newPassword  ,
+    ConfirmPassword : passwordData.confirmPassword      
   };
       
-        await authService.changePassword(
-          payload);
+        await authService.changePassword(payload);
       toast.success("Password changed successfully");
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
 
     } catch (err) {
-      toast.error("There be errro",err);
-
-      console.log("There be error is ",err)
+   console.log("Server Error Message:", err.response?.data); 
+    toast.error("Error: " + (err.response?.data?.message || "Something went wrong"));
 
 
 

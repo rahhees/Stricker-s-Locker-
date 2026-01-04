@@ -41,14 +41,11 @@ export const WishlistProvider = ({ children }) => {
 
 
     const isAlreadyInWishlist = wishlist.find((item) => item.productId === product.id || item.id === product.id);
-
     if (isAlreadyInWishlist) {
       setWishlist((prev) => prev.filter((item) => (item.productId || item.id) !== product.id));
     } else {
       setWishlist((prev) => [...prev, product]);
     }
-
-
     try {
 
       const res = await wishlistService.toggleWishlist(product.id);
@@ -63,9 +60,8 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
-
   const removeFromWishlist = async (productId) => {
-    await addToWishlist({ id: productId }); // Re-use the toggle logic
+    await addToWishlist({ id: productId }); 
   };
 
 
