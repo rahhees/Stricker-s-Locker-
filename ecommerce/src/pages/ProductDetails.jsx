@@ -15,6 +15,7 @@ import { CartContext } from "../Context/CartContext";
 import { WishlistContext } from "../Context/WishlistContext";
 import ProductCard from "../Component/CartDesign";
 import { productService } from "../Services/ProductService";
+import { toast } from "react-toastify";
 
 function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -58,7 +59,7 @@ function ProductDetails() {
       // 1. Fetch data from backend
       const [productData, relatedData] = await Promise.all([
         productService.getById(id),
-        productService.getRelated(id)
+        productService.getRelatedProducts(id)
       ]);
 
       // 2. Update state

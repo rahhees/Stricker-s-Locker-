@@ -8,8 +8,8 @@ import { CartContext } from "../Context/CartContext";
 import { OrderContext } from "../Context/OrderContext";
 
 const initialState = {
-  firstname: "",
-  lastname: "",
+  
+  ReceiverName: "",
   emailaddress: "",
   mobileno: "",
   address: "",
@@ -72,10 +72,10 @@ function ShippingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800  pb-10 px-4 pt-18">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         {/* Step Indicator */}
-        <div className="flex justify-center ">
-          <div className="flex items-center space-x-4 mt-8">
+        <div className="flex justify-center  ">
+          <div className="flex items-center space-x-4 mt-10">
             {[
               { step: 1, label: "Cart", active: true },
               { step: 2, label: "Shipping", active: true },
@@ -108,21 +108,13 @@ function ShippingPage() {
             <h2 className="text-2xl font-bold mb-6 text-gray-800">Shipping Information</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  name="firstname"
-                  value={state.firstname}
-                  onChange={handleChange}
-                  placeholder="First Name"
-                  className="w-full p-3 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
-                  required
-                />
+              
                 <input
                   type="text"
                   name="lastname"
                   value={state.lastname}
                   onChange={handleChange}
-                  placeholder="Last Name"
+                  placeholder="Receiver Name"
                   className="w-full p-3 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                   required
                 />
@@ -158,14 +150,7 @@ function ShippingPage() {
                 className="w-full p-3 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                 required
               />
-              <input
-                type="text"
-                name="apartment"
-                value={state.apartment}
-                onChange={handleChange}
-                placeholder="Apartment, suite, etc. (optional)"
-                className="w-full p-3 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
-              />
+         
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <input
@@ -197,15 +182,7 @@ function ShippingPage() {
                 />
               </div>
 
-              <input
-                type="text"
-                name="country"
-                value={state.country}
-                onChange={handleChange}
-                placeholder="Country"
-                className="w-full p-3 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
-                required
-              />
+   
 
               {/* Save Button */}
               <button
