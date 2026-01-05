@@ -24,5 +24,9 @@ getProfile :async ()=>{
           },
         });
         return response.data;
-  }
+  },
+
+
+
+
 }

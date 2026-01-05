@@ -136,6 +136,3 @@ useEffect(()=>{
 }
 
 export default Product;
-
-
-

@@ -7,6 +7,7 @@ import { WishlistContext } from "../Context/WishlistContext";
 import { toast } from "react-toastify";
 import api from "../Api/AxiosInstance";
 import { AuthContext } from "../Context/AuthContext";
+import { productService } from "../Services/ProductService";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,14 +42,19 @@ const Navbar = () => {
   }, []);
 
   const fetchSuggestions = async (query) => {
-    try {
-      const res = await api.get(`/products?search=${query}`);
-      setSuggestions(res.data.slice(0, 5));
-    } catch (err) {
-      console.error("Error fetching suggestions:", err);
-      setSuggestions([]);
+        if(!query){
+          setSuggestions([]);
+          return;
+        }
+
+        try{
+          const data = await productService.searchProducts(query);
+          setSuggestions(data.slice(0,5));
+          console.log(data)
+        }catch(err){
+          setSuggestions([]);
+        }
     }
-  };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -88,14 +94,6 @@ const Navbar = () => {
     setSuggestions([]);
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null); 
-    toast.success("Signed out successfully!");
-    navigate("/login");
-    setMobileMenuOpen(false);
-  };
 
   return (
     <div className="fixed top-0 left-0 w-full z-50 px-4 pt-4">
@@ -155,6 +153,35 @@ const Navbar = () => {
                 <button type="submit" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-300">
                   <Search size={16} />
                 </button>
+
+              {suggestions.length > 0 && (
+    <div className="absolute top-full left-0 mt-2 w-72 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-[60]">
+      {suggestions.map((product) => (
+      
+        <div
+          key={product.id}
+          onClick={() => {
+            handleNavigate(`/product/${product.id}`);
+            setSearchTerm("");
+          }}
+          className="flex items-center p-3 hover:bg-gray-800 cursor-pointer border-b border-gray-800 last:border-0 transition-colors"
+        >
+          <img 
+            src={product.image || "/placeholder-product.png"} 
+            alt={product.name} 
+            className="w-10 h-10 object-cover rounded-md mr-3"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-white truncate w-40">
+              {highlightMatch(product.name, searchTerm)}
+            </span>
+            <span className="text-xs text-red-400">${product.price}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+
               </form>
 
               {/* Wishlist */}
@@ -212,12 +239,7 @@ const Navbar = () => {
                       )}
                     </div>
                     
-                    <span className="text-sm font-medium">
-                      {/* Clean up name display */}
-                      {user.firstName && user.firstName !== "undefined" 
-                        ? user.firstName 
-                        : (user.email ? user.email.split('@')[0] : "Profile")}
-                    </span>
+                  
                   </button>
                 </div>
               )}

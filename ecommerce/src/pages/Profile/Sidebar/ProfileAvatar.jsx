@@ -1,7 +1,8 @@
-import { useState } from "react"; // Import useState for loading
+import { useContext, useState } from "react"; // Import useState for loading
 import { toast } from "react-toastify";
 import Avatar from "../Shared/Avatar";
 import { userService } from "../../../Services/UserService"; // Use your service!
+import { AuthContext } from "../../../Context/AuthContext";
 
 const ProfileAvatar = ({ user, setUser }) => {
   const [uploading, setUploading] = useState(false);
@@ -37,7 +38,10 @@ const ProfileAvatar = ({ user, setUser }) => {
 
       // 4. Refresh User Data to get the new Cloudinary URL
       const updatedUser = await userService.getProfile();
-      setUser(updatedUser);
+      const newUserState = { ...user, ...updatedUser };
+
+      setUser(newUserState);
+      localStorage.setItem("user",JSON.stringify(updatedUser));
 
     } catch (err) {
       console.error(err);

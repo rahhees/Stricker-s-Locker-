@@ -14,6 +14,7 @@ import {
 import { CartContext } from "../Context/CartContext";
 import { WishlistContext } from "../Context/WishlistContext";
 import ProductCard from "../Component/CartDesign";
+import { productService } from "../Services/ProductService";
 
 function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -51,26 +52,31 @@ function ProductDetails() {
     wishlist ? wishlist.some((item) => item.id === id) : false;
 
   // 🧩 Fetch product + related products
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await api.get(`/products/${id}`);
-        setProduct(res.data);
-        console.log("Product api response", res.data)
+ useEffect(() => {
+  const loadProductPage = async () => {
+    try {
+      // 1. Fetch data from backend
+      const [productData, relatedData] = await Promise.all([
+        productService.getById(id),
+        productService.getRelated(id)
+      ]);
 
-        const allRes = await api.get("/products");
-        const related = allRes.data.filter(
-          (p) =>
-            p.category?.toLowerCase() === res.data.category?.toLowerCase() &&
-            p.id !== res.data.id
-        );
-        setRelatedProducts(related);
-      } catch (err) {
-        console.error("Error fetching product", err);
-      }
-    };
-    fetchProduct();
-  }, [id]);
+      // 2. Update state
+      setProduct(productData);
+      setRelatedProducts(relatedData);
+
+      // 3. Reset UI states
+      window.scrollTo(0, 0); // Scroll to top on new product
+      setSelectedImage(0);
+      setQuantity(1);
+    } catch (err) {
+      console.error("Error loading product details", err);
+      toast.error("Could not load product");
+    }
+  };
+
+  loadProductPage();
+}, [id]); // This triggers whenever the URL ID changes
 
   const handleBuy = () => {
     navigate("/Shipping", { state: { product, quantity } });
