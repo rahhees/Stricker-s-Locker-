@@ -21,6 +21,12 @@ const Navbar = () => {
   const mobileMenuRef = useRef(null);
   const navigate = useNavigate();
 
+
+  const searchTimeout = useRef(null);
+
+  
+
+
   const { cartLength } = useContext(CartContext);
   const { wishlistLength } = useContext(WishlistContext);
   const { searchTerm, setSearchTerm, applySearch } = useContext(SearchContext);
@@ -57,13 +63,23 @@ const Navbar = () => {
     }
 
   const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    if (value.trim() === "") {
+    const newValue = e.target.value; // Declare 'newValue' here
+    setSearchTerm(newValue);
+
+    // Clear previous timer
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+
+    if (newValue.trim() === "") {
       setSuggestions([]);
       return;
     }
-    fetchSuggestions(value);
+
+    // Start a new timer
+    searchTimeout.current = setTimeout(() => {
+      fetchSuggestions(newValue); // Pass 'newValue' to the function
+    }, 300);
   };
 
   const highlightMatch = (text, query) => {
@@ -154,32 +170,28 @@ const Navbar = () => {
                   <Search size={16} />
                 </button>
 
+              {/* Suggestions Dropdown */}
               {suggestions.length > 0 && (
-    <div className="absolute top-full left-0 mt-2 w-72 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-[60]">
-      {suggestions.map((product) => (
-      
-        <div
-          key={product.id}
-          onClick={() => {
-            handleNavigate(`/product/${product.id}`);
-            setSearchTerm("");
-          }}
-          className="flex items-center p-3 hover:bg-gray-800 cursor-pointer border-b border-gray-800 last:border-0 transition-colors"
-        >
-          <img 
-            src={product.image || "/placeholder-product.png"} 
-            alt={product.name} 
-            className="w-10 h-10 object-cover rounded-md mr-3"
-          />
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-white truncate w-40">
-              {highlightMatch(product.name, searchTerm)}
-            </span>
-            <span className="text-xs text-red-400">${product.price}</span>
-          </div>
-        </div>
-      ))}
-    </div>
+                <div className="absolute top-full left-0 mt-2 w-72 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-[60]">
+                  {suggestions.map((product) => (
+                    <div
+                      key={product.id}
+                      onClick={() => {
+                        // NAVIGATE TO DETAILS PAGE
+                        handleNavigate(`/product/${product.id}`);
+                        setSearchTerm("");
+                      }}
+                      className="flex items-center p-3 hover:bg-gray-800 cursor-pointer border-b border-gray-800 last:border-0 transition-colors"
+                    >
+                      <img src={product.image} alt={product.name} className="w-10 h-10 object-cover rounded-md mr-3" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-white truncate w-40">{product.name}</span>
+                        <span className="text-xs text-red-400">₹{product.price}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+            
   )}
 
               </form>
@@ -257,6 +269,6 @@ const Navbar = () => {
       </nav>
     </div>
   );
-};
+}
 
 export default Navbar;

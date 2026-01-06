@@ -46,10 +46,10 @@ const ProfilePage2 = () => {
         setActiveTab={setActiveTab}
       />
       
-      {/* Right Main Content - Remove the extra div wrappers */}
-      <div className="lg:col-span-3">
-        {activeTab === "profile" && (
-         <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">
+     
+     <div className="lg:col-span-3 h-[calc(100vh-180px)] overflow-y-auto pr-2 custom-scrollbar">
+  {activeTab === "profile" && (
+      <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">
             {isEditing ? (
               <ProfileInfoEdit
                 user={user}
@@ -64,10 +64,17 @@ const ProfilePage2 = () => {
               />
             )}
           </div>
-        )}
+  )}
+
+  {activeTab === "orders" && (
+    <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">
+      <ProfileOrders />
+    </div>
+  )}
+    
 
        {activeTab === "orders" && (
-          <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50">
+          <div className="bg-gray-800/50 rounded-2xl p-8 backdrop-blur-sm border border-gray-700/50 ">
             <ProfileOrders />
           </div>
         )}

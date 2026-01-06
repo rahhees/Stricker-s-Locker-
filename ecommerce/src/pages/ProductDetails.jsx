@@ -2,20 +2,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../Api/AxiosInstance";
-import {
-  ShoppingCart,
-  Star,
-  Heart,
-  Shield,
-  Truck,
-  RotateCcw,
-  Award,
+import { ShoppingCart, Star, Heart, Shield, Truck, RotateCcw, Award,
 } from "lucide-react";
 import { CartContext } from "../Context/CartContext";
 import { WishlistContext } from "../Context/WishlistContext";
 import ProductCard from "../Component/CartDesign";
 import { productService } from "../Services/ProductService";
 import { toast } from "react-toastify";
+import { orderService } from "../Services/OrderService";
 
 function ProductDetails() {
   const [product, setProduct] = useState(null);
@@ -31,6 +25,9 @@ function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  console.log("Product description:", product?.description);
+
+
   // 🧩 Wishlist toggle
   const handleWishlist = () => {
     addToWishlist(product);
@@ -45,6 +42,9 @@ function ProductDetails() {
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     setZoomPosition({ x, y });
   };
+
+
+
 
   const handleMouseEnter = () => setIsHovering(true);
   const handleMouseLeave = () => setIsHovering(false);
@@ -79,10 +79,46 @@ function ProductDetails() {
   loadProductPage();
 }, [id]); // This triggers whenever the URL ID changes
 
-  const handleBuy = () => {
-    navigate("/Shipping", { state: { product, quantity } });
-  };
+  const handleBuyNow = async () => {
+  try {
+    // 1. Call your new Direct Buy endpoint
+    const response = await orderService.directBuy( {
+      productId: product.id,
+      quantity: quantity,
+      shippingAddress: userAddress || "Please Update Address in Profile"
+    });
 
+    const orderId = response.data.data;
+
+    
+    const options = {
+      key: "rzp_test_S0goOJJ0kMzST1",
+      amount: product.price * selectedQuantity * 100,
+      currency: "INR",
+      order_id: orderId.razorpay_payment_id,
+      handler: async function (response) {
+ 
+        const  verifyPaymentOnBackend=({
+          orderId: orderData.orderId,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpaySignature: response.razorpay_signature
+        });
+
+        const  verification = await orderService.verifyPayment(verifyPaymentOnBackend);
+
+        if(verification.statusCode ===200){
+        navigate("/confirmation", { state: { orderId } });
+      }
+    }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+
+  } catch (error) {
+    toast.error("Failed to initiate direct purchase");
+  }
+};
   // 🧩 Quantity update logic (syncs with Cart Context)
   const handleQuantityChange = (change) => {
     setQuantity((prev) => Math.max(1, prev + change));
@@ -94,6 +130,7 @@ function ProductDetails() {
       addToCart(product, 1); // auto-add if not in cart yet
     }
   };
+console.log("Product description5:", product?.description);
 
   if (!product) {
     return (
@@ -105,6 +142,7 @@ function ProductDetails() {
       </div>
     );
   }
+
 
   const productImages = product.images
     ? Array.isArray(product.images)
@@ -166,7 +204,7 @@ function ProductDetails() {
             </div>
 
             <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
-              {productImages.map((img, index) => (
+              {productImages.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
@@ -175,7 +213,7 @@ function ProductDetails() {
                     : "border-gray-200 hover:border-gray-300"
                     }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={image} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -205,7 +243,7 @@ function ProductDetails() {
                     key={i}
                     size={20}
                     className={
-                      i < Math.floor(product.rating || 4.5)
+                      i < Math.floor(product.rating ||3)
                         ? "fill-yellow-400 text-yellow-400"
                         : "text-gray-300"
                     }
@@ -227,6 +265,15 @@ function ProductDetails() {
                 OFF
               </span>
             </div>
+
+            {/* Product Description */}
+  <div className="pt-4 border-t border-gray-700">
+ 
+
+    <p className="text-gray-300 leading-relaxed">
+      {product?.description || "No description available."}
+    </p>
+  </div>
 
             {/* 🔢 Quantity Selector */}
             <div className="flex items-center gap-4">
@@ -347,8 +394,10 @@ function ProductDetails() {
                         isInWishlist={isInWishlist}
                         viewMode="grid"
 
+                    
+
                         // Ensure navigation works on the new card wrapper
-                        onClick={() => navigate(`/products/${item.id}`)}
+                        onClick={() => navigate(`/product/${item.id}`)}
                       />
                     </div>
                   ))}

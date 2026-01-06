@@ -1,13 +1,20 @@
 import axios from "axios";
 
-
+// Primary instance for app requests
 const api = axios.create({
   baseURL: "https://localhost:57401/api",
-  withCredentials :true,
+  withCredentials: true, // Required to send/receive session cookies
   headers: { "Content-Type": "application/json" },
 });
 
+// Instance specifically for refreshing tokens
+const refreshClient = axios.create({
+  baseURL: "https://localhost:57401/api",
+  withCredentials: true, // CRITICAL: Allows browser to send the .AspNetCore.Session cookie
+  headers: { "Content-Type": "application/json" },
+});
 
+// Request Interceptor: Attach Access Token (JWT)
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
@@ -19,18 +26,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
-const refreshClient = axios.create({
-  baseURL: "https://localhost:57401/api",
-  headers: { "Content-Type": "application/json" },
-});
-
+// Response Interceptor: Handle 401 Unauthorized
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-   
+    // Avoid infinite loops if Login or Refresh themselves fail
     if (
       originalRequest.url.includes("/Auth/Login") ||
       originalRequest.url.includes("/Auth/Refresh-Token")
@@ -38,38 +40,29 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Check for 401 and ensure we haven't already tried to retry this request
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const accessToken = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
-
-    
-      if (!accessToken || !refreshToken) {
-        localStorage.clear();
-        // window.location.replace("/login");
-        return Promise.reject(error);
-      }
-
       try {
-        const res = await refreshClient.post(
-          "/Auth/Refresh-Token",
-          { accessToken, refreshToken }
-        );
+        // We send an empty body {} because the backend reads the RefreshToken from the Session
+        const res = await refreshClient.post("/Auth/Refresh-Token", {});
 
+        // Extract the new access token from your ApiResponse structure
         const newAccessToken = res.data.data.accessToken;
-        const newRefreshToken = res.data.data.refreshToken;
-
+        
+        // Update LocalStorage
         localStorage.setItem("accessToken", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
 
-        originalRequest.headers.Authorization =
-          `Bearer ${newAccessToken}`;
+        // Update the header and retry the original request
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return api(originalRequest);
 
-        return api(originalRequest); 
       } catch (refreshError) {
+        // If refresh fails, the session is dead. Clear everything and force login.
+        console.error("Session expired, logging out...");
         localStorage.clear();
-        window.location.replace("/login");
+        window.location.replace("/login"); 
         return Promise.reject(refreshError);
       }
     }

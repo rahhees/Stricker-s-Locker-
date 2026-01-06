@@ -14,19 +14,30 @@ export const orderService = {
   //place order 
 
   placeOrder: async (orderData) => {
-    const response = await api.get("/orders",orderData);
+    const response = await api.post("/orders",orderData);
     return response.data;
   },
 
   getOrderById :async (id) =>{
-    const response = await api.post(`/orders/${id}`);
+    const response = await api.get(`/orders/${id}`);
     return response.data;
   },
 
   cancelOrder :async (orderId)=>{
-    const response = await api.put(`/orders/cancel/${orderId}`);
+    const response = await api.post(`/orders/cancel/${orderId}`);
     return response.data;
 
 
+},
+
+  verifyPayment: async (paymentData) => {
+  const response = await api.post("/orders/verify-payment", paymentData);
+  return response.data;
+},
+
+directBuy :async (paymentData) =>{
+  const response = await api.post("/orders/direct-buy",paymentData);
+  return response.data;
 }
+
 }

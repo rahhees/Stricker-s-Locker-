@@ -121,7 +121,7 @@ useEffect(()=>{
                 onAddToCart={addToCart}
                 onAddToWishlist={addToWishlist}
                 isInWishlist={isInWishlist}
-                onClick={() => p.stock > 0 && navigate(`/products/${p.id}`)}
+                onClick={() => p.stock > 0 && navigate(`/product/${p.id}`)}
               />
             ))}
           </div>
