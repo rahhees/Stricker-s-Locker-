@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import MainLayout from "./pages/MainLayout";
 import ProfilePage2 from "./pages/Profile/ProfilePage2";
 import OrderDetails from "./pages/Profile/Sections/ProfileOrderDetails";
+import ConfirmationPage from "./pages/ConfirmationPage";
 
 
 // Lazy loaded pages
@@ -24,7 +25,7 @@ const Wishlist = lazy(() => import("./pages/WhislistPage"));
 const Shipping = lazy(() => import("./pages/ShippingPage"));
 const Payment = lazy(() => import("./pages/PaymentPage"));
 
-const Confirmation = lazy(() => import("./pages/ConfirmationPage"));
+// const Confirmation = lazy(() => import("./pages/ConfirmationPage"));
 const Profile = lazy(() => import("./pages/Profile/ProfilePage2"));
 const About = lazy(() => import("./pages/AboutPage"));
 const Contact = lazy(() => import("./pages/ContactPage"));
@@ -70,7 +71,7 @@ function App() {
                     <Route path="/shipping" element={<Shipping />} />
                     <Route path="/orders" element={<OrderDetails/>}/>
                     <Route path="/payment" element={<Payment />} />
-                    <Route path="/confirmation" element={<Confirmation />} />
+                    <Route path="/confirmation" element={<ConfirmationPage />} />
                     <Route path="/profile" element={<ProfilePage2 />} />
                   </Route>
 

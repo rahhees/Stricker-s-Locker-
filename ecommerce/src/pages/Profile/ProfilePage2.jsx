@@ -22,15 +22,8 @@ const ProfilePage2 = () => {
  
 
 
-  useEffect(()=>{
-    if(!isLoading && !user){
-      navigate("/login")
-    }
-  },[isLoading,user,navigate])
-
-
   if (isLoading) return <ProfileLoader />;    
-  if(!user) return null;
+
 
   
   
