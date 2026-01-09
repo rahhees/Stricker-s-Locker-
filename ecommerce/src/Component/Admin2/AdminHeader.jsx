@@ -5,19 +5,41 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const AdminHeader = ({ sidebarOpen, setSidebarOpen }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-    toast.success("Logged out successfully");
-    navigate("/login");
-  };
-
+const handleLogout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of the admin panel!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#2563eb", // blue-600
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Sign Out!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+      background: "#ffffff",
+      customClass: {
+        popup: "rounded-2xl",
+        confirmButton: "rounded-lg px-4 py-2",
+        cancelButton: "rounded-lg px-4 py-2"
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Logic execution if user clicks "Yes"
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        
+        toast.success("Logged out successfully");
+        navigate("/login");
+      }
+    });
+}
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-30">
       

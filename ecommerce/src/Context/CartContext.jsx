@@ -153,14 +153,14 @@ export const CartProvider = ({ children }) => {
       try{
         await cartService.clearCart();
         setCart([]);
-        toast.info("Cart Cleared");
+        // toast.info("Cart Cleared");
       }catch(err){
         console.log(err);
       }
     }else{
       setCart([]);
       localStorage.removeItem("cart");
-      toast.info("Cart Cleared");
+      // toast.info("Cart Cleared");
     }
   }
 
