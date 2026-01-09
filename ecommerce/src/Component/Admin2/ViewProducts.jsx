@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { adminService } from "../../Services/AdminService";
-import { productService } from "../../Services/ProductService"; 
+import { productService } from "../../Services/ProductService";
 import { toast } from "react-toastify";
-import { 
-  Edit, Trash2, Plus, Search, 
-  Package, IndianRupee, AlertCircle, Filter, 
+import {
+  Edit, Trash2, Plus, Search,
+  Package, IndianRupee, AlertCircle, Filter,
   Loader2, RefreshCw
 } from "lucide-react";
 
@@ -22,7 +22,7 @@ const ViewProducts = () => {
       setLoading(true);
       // We call the service and ensure we get the latest data
       const response = await productService.getAllProducts();
-      
+
       // Ensure we are setting an array
       setProducts(response.data || []);
     } catch (err) {
@@ -72,14 +72,14 @@ const ViewProducts = () => {
           <h2 className="text-2xl font-bold text-gray-800">Product Inventory</h2>
         </div>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={fetchProducts}
             className="p-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all"
             title="Refresh Data"
           >
             <RefreshCw size={20} />
           </button>
-          <button 
+          <button
             onClick={() => navigate("/admin/AddProduct")}
             className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-md shadow-blue-100"
           >
@@ -92,7 +92,7 @@ const ViewProducts = () => {
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input 
+          <input
             type="text"
             placeholder="Search products by name..."
             className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -123,9 +123,9 @@ const ViewProducts = () => {
                   <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-4">
-                        <img 
-                          src={product.imageUrl || "/placeholder-image.png"} 
-                          alt={product.name} 
+                        <img
+                          src={product.image || "/placeholder-image.png" ||product.name || product.imageUrl}
+                          alt={product.name}
                           className="w-12 h-12 rounded-lg object-cover border border-gray-100"
                         />
                         <div>
@@ -158,14 +158,14 @@ const ViewProducts = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center space-x-2">
-                        <button 
+                        <button
                           onClick={() => navigate(`/admin/EditProduct/${product.id}`)}
                           className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                           title="Edit Details"
                         >
                           <Edit size={18} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(product.id)}
                           className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                           title="Delete Product"

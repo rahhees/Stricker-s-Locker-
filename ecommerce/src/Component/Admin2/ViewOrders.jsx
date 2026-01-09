@@ -158,18 +158,18 @@ const ViewOrders = () => {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <select
-                        value={order.status}
+                        value={String(order.status)}
                         disabled={updatingId === order.id}
                         onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
                         className={`px-3 py-1 rounded-full text-xs font-bold border outline-none cursor-pointer transition-all appearance-none text-center ${getStatusStyle(order.status)} ${
                           updatingId === order.id ? "opacity-50 animate-pulse" : ""
                         }`}
                       >
-                        <option value={0}>Pending</option>
-                        <option value={1}>Processing</option>
-                        <option value={2}>Shipped</option>
-                        <option value={3}>Delivered</option>
-                        <option value={4}>Cancelled</option>
+                        <option value="0">Pending</option>
+                        <option value="1">Processing</option>
+                        <option value="2">Shipped</option>
+                        <option value="3">Delivered</option>
+                        <option value="4">Cancelled</option>
                       </select>
                     </td>
                     <td className="px-6 py-4 text-right">

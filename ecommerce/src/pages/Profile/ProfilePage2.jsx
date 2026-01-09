@@ -12,12 +12,26 @@ import ProfileOrders from "./Sections/ProfileOrderDetails";
 import {  useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 
+import { toast } from "sonner";
+import { collapseToast, ToastContainer } from "react-toastify";
+
+
 
 const ProfilePage2 = () => {
   const navigate  = useNavigate();
   const { user, setUser, isLoading } = useProfile();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    // If we aren't loading and there is no user, redirect to login
+    if (!user) {
+      // Toaster.err("Login Required")
+      toast.error("login needed");
+  
+      navigate("/login"); // Adjust this path to your login route
+    }
+  }, [ navigate]);
 
  
 

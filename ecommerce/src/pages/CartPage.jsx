@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Check, Lock, Trash2 } from "lucide-react";
 import { CartContext } from "../Context/CartContext";
 import Swal from "sweetalert2";
+import { AuthContext } from "../Context/AuthContext";
 
 function CartPage() {
   const { cart, updateQuantity, removeFromCart,setCart,clearCart } = useContext(CartContext);
+
+
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const estimatedTax = subtotal * 0.08;
@@ -37,6 +40,7 @@ const handleClearCart = () => {
       }
     });
   };
+
 
   // Hide scrollbar globally
   useEffect(() => {

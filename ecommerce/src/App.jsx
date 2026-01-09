@@ -20,6 +20,7 @@ import EditProduct from "./Component/Admin2/EditProduct";
 import AdminLayout from "./Component/Admin2/AdminLayout";
 import AdminDashboard from "./Component/Admin2/AdminDashboard";
 import ViewUsers from "./Component/Admin2/ViewUsers";
+import ResetPasswordPage from "./pages/ResetPassword";
 
 
 // Lazy loaded pages
@@ -66,6 +67,7 @@ function App() {
                   <Route path="/product/:id" element={<ProductDetails />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/reset-password" element={<ResetPasswordPage/>}/>
 
       
                
