@@ -21,6 +21,7 @@ import AdminLayout from "./Component/Admin2/AdminLayout";
 import AdminDashboard from "./Component/Admin2/AdminDashboard";
 import ViewUsers from "./Component/Admin2/ViewUsers";
 import ResetPasswordPage from "./pages/ResetPassword";
+import ManageCategories from "./Component/Admin2/AdminCategory";
 
 
 // Lazy loaded pages
@@ -98,6 +99,7 @@ function App() {
     <Route path="AddProduct" element={<AddProduct />} />
     <Route path="EditProduct/:id" element={<EditProduct />} />
     <Route path="OrderDetails/:id" element={<OrderDetails />} />
+    <Route path="Category" element={<ManageCategories/>}/>
   </Route>
 </Route>
 

@@ -134,7 +134,7 @@ const handleBuyNow = () => {
   return (
     <div className="w-full bg-gradient-to-br from-gray-900 to-gray-800 pb-10 px-4 text-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-2">
           
           {/* 🖼️ Image Section */}
           <div className="space-y-4 ">

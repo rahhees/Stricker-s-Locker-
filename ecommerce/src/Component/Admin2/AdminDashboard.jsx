@@ -77,13 +77,24 @@ useEffect(() => {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-6">Sales Overview</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={[{day: 'Mon', sales: 400}, {day: 'Tue', sales: 300}, {day: 'Wed', sales: stats.totalRevenue / 10}]}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="sales" stroke="#3b82f6" fillOpacity={0.1} fill="#3b82f6" />
-            </AreaChart>
+            <AreaChart data={stats.salesHistory || []}>
+  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+  <XAxis 
+    dataKey="date" 
+    tickFormatter={(str) => new Date(str).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} 
+  />
+  <YAxis />
+  <Tooltip 
+    formatter={(value) => [`₹${value.toLocaleString()}`, "Revenue"]} 
+  />
+  <Area 
+    type="monotone" 
+    dataKey="revenue" 
+    stroke="#3b82f6" 
+    fillOpacity={0.1} 
+    fill="#3b82f6" 
+  />
+</AreaChart>
           </ResponsiveContainer>
         </div>
 

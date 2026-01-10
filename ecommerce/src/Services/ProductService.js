@@ -42,6 +42,17 @@ export const productService = {
   getRelatedProducts:async(id)=>{
     const res = await api.get(`/products/${id}/related`);
     return res.data.data;
+  },
+
+  getProductByCategoryId :async (categoryId)=>{
+    try{
+      const response = await api.get(`/products/category/${categoryId}`);
+      return response.data;
+    }catch(error){
+      console.error("Error Fetching Products by category ",error);
+      throw error;
+    }
+    
   }
 
 

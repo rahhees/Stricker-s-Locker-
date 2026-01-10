@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { 
   LayoutDashboard, Users, ShoppingCart, 
   Package, PlusSquare, Settings, 
-  ChevronLeft, ChevronRight 
+  ChartPieIcon, ChevronRight 
 } from "lucide-react";
 
 const AdminSidebar = ({ sidebarOpen }) => {
@@ -33,6 +33,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
       path: "/admin/ViewOrders", 
       label: "Orders", 
       icon: ShoppingCart 
+    },
+    {
+        path:"/admin/Category",
+        label :"Category",
+        icon : ChartPieIcon
     }
   ];
 
@@ -48,7 +53,7 @@ const AdminSidebar = ({ sidebarOpen }) => {
         </div>
         {sidebarOpen && (
           <span className="ml-3 font-bold text-xl text-gray-800 tracking-tight transition-opacity">
-            Admin<span className="text-blue-600">Pro</span>
+            Admin<span className="text-blue-600"></span>
           </span>
         )}
       </div>
