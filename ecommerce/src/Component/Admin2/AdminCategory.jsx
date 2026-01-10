@@ -42,7 +42,6 @@ const ManageCategories = () => {
     } catch (err) {
       console.error("Fetch Error:", err);
       toast.error("Failed to load categories");
-      toast.error(err.message)
     } finally {
       setLoading(false);
     }
@@ -52,7 +51,7 @@ const ManageCategories = () => {
     fetchCategories();
   }, [fetchCategories]);
 
-  // 2. Fetch Products for a specific Category
+  // 2. Fetch Products for a specific Category using the provided ID-based logic
   const handleCategoryClick = async (category) => {
     // Toggle off if clicking the same category
     if (selectedCategory?.id === category.id) {
@@ -65,18 +64,20 @@ const ManageCategories = () => {
     setLoadingProducts(true);
     
     try {
-      const response = await productService.getProductByCategoryId(category.id);
+    
+      const responseData = await productService.getProductByCategoryId(category.id);
       
-      console.log("Raw API Response:", response);
+      console.log("Raw API Response:", responseData);
 
-      // FIX: Robust data extraction. 
-      // Checks for .data.data (standard wrapper), then .data, then .result
-      const extractedData = response.data?.data || response.data || response.result || response;
+    
+      const extractedList = responseData?.data && Array.isArray(responseData.data) 
+    ? responseData.data 
+    : (Array.isArray(responseData) ? responseData : []);
       
-      console.log("Extracted List:", extractedData);
+      console.log("Extracted List:", extractedList);
 
       // Set the list (ensure it's an array)
-      setCategoryProducts(Array.isArray(extractedData) ? extractedData : []);
+      setCategoryProducts(Array.isArray(extractedList) ? extractedList : []);
       
     } catch (err) {
       const errorMsg = err.response?.data?.message || err.message;
@@ -196,7 +197,7 @@ const ManageCategories = () => {
                   onChange={(e) => setNewCategoryName(e.target.value)}
                   required
                 />
-                <button type="submit" disabled={isAdding} className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 disabled:bg-blue-300 transition-all">
+                <button type="submit" disabled={isAdding} className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 disabled:bg-blue-300 transition-all shadow-md">
                   {isAdding ? <Loader2 className="animate-spin mx-auto" size={20} /> : "Create"}
                 </button>
               </form>
@@ -275,7 +276,7 @@ const ManageCategories = () => {
                 ) : categoryProducts.length > 0 ? (
                   categoryProducts.map((product) => (
                     <div key={product.id} className="flex items-center gap-4 p-3 border border-gray-200 rounded-xl hover:shadow-md transition-all bg-white group">
-                      <div className="w-16 h-16 rounded-lg bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100">
+                      <div className="w-16 h-16 rounded-lg bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100 shadow-sm">
                         <img 
                           src={getFullImageUrl(product.image || product.imageUrl)} 
                           alt={product.name} 
@@ -286,7 +287,7 @@ const ManageCategories = () => {
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-800 truncate text-sm">{product.name}</h4>
                         <div className="flex justify-between items-center mt-1">
-                          <span className="text-blue-600 font-bold text-sm">₹{product.price}</span>
+                          <span className="text-blue-600 font-bold text-sm">₹{product.price.toLocaleString()}</span>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                             {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
                           </span>

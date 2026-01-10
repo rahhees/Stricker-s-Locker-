@@ -218,13 +218,13 @@ const ViewUsers = () => {
                       >
                         {user.isBlocked ? <UserCheck size={18} /> : <ShieldAlert size={18} />}
                       </button>
-                      <button 
+                      {/* <button 
                         onClick={() => handleDelete(user)}
                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete User"
                       >
                         <Trash2 size={18} />
-                      </button>
+                      </button> */}
                     </div>
                   </td>
                 </tr>

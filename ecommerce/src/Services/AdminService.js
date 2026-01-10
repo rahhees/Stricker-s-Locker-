@@ -98,7 +98,7 @@ export const adminService = {
   deleteCategory: async (id) => {
     const response = await api.delete(`/admin/categories/${id}`);
     return response.data;
-  },
+  }
 
 
 
