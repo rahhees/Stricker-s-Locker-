@@ -23,6 +23,12 @@ export const productService = {
   
 
   },
+
+   getFeaturedProducts: async () => {
+    const response = await api.get("/products/featured");
+    return response.data.data;
+  },
+
   searchProducts :async (query) =>{
     try{
       const response = await api.get(`/products/search?query=${query}`);
