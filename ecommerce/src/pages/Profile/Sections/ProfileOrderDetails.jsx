@@ -91,6 +91,16 @@ const ProfileOrders = () => {
     }
   };
 
+  const handleDownloadInvoice = (order) => {
+  if (order.paymentMethod === "COD" && order.status === "Pending") {
+    // For COD, we allow the download so they have a 'bill' for the delivery man
+    toast.info("Downloading Order Summary. Final receipt issued upon delivery.");
+  }
+  
+  // Trigger PDF Generation
+  generatePDF(order.id);
+};
+
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center py-32 bg-[#0a0a0a] min-h-screen">
@@ -166,6 +176,8 @@ const ProfileOrders = () => {
                     </div>
                   </div>
 
+                  
+
                   {/* --- VISUAL TRACKING STEPPER --- */}
                   {currentStatus !== "CANCELLED" && (
                     <div className="px-8 pt-10 pb-6 bg-black/20">
@@ -178,9 +190,9 @@ const ProfileOrders = () => {
                         
                         {[
                           { icon: Clock, label: 'Pending' },
-                          { icon: Box, label: 'Assembly' },
-                          { icon: Truck, label: 'Transit' },
-                          { icon: CheckCircle, label: 'Deployed' }
+                          { icon: Box, label: 'Processing' },
+                          { icon: Truck, label: 'Shipped' },
+                          { icon: CheckCircle, label: 'Delivered' }
                         ].map((step, idx) => {
                           const Icon = step.icon;
                           const isDone = activeStep > idx;

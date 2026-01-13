@@ -83,6 +83,8 @@ function ProductDetails() {
     loadProductPage();
   }, [id]);
 
+  
+
   // Logic: Buy Now flow
   const handleBuyNow = () => {
     if (!user) {
@@ -247,7 +249,7 @@ function ProductDetails() {
                   ) : (
                     <>
                       <ShoppingCart size={20} className={product.stock <= 0 ? "opacity-20" : ""} /> 
-                      {product.stock <= 0 ? "OUT OF STOCK" : "EQUIP TO BAG"}
+                      {product.stock <= 0 ? "OUT OF STOCK" : "ADD TO CART"}
                     </>
                   )}
                 </button>
